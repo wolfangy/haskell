@@ -10,8 +10,19 @@
 - to change the prompt
 `:set prompt "ghci> "`
 
+- to dispaly type
+`:set +t`
+
+- undo the set
+`:unset +t`
+
 - to load other modules
 `:module + Data.Ratio`
+or
+`:m +Data.Ratio`
+
+- to change working dir
+`:cd /tmp`
 
 **Operators**
 - `/=` for NOT equal

@@ -1,5 +1,7 @@
 *ghc* - compiler
+
 *ghci* - interactive interpreter and debugger
+
 *runghc* - run Haskell as scripts
 
 ---

@@ -7,8 +7,7 @@ module SimpleJSON (
     , getObject
     , getArray
     , isNull
-
-) where
+    ) where
 
 data JValue = JString String
             | JNumber Double
@@ -32,7 +31,7 @@ getDouble _ = Nothing
 
 getBool :: JValue -> Maybe Bool
 getBool (JBool b) = Just b
-getBool _ = Nothing
+retBool _ = Nothing
 
 getObject :: JValue -> Maybe [(String, JValue)]
 getObject (JObject o) = Just o
@@ -43,4 +42,5 @@ getArray (JArray a) = Just a
 getArray _ = Nothing
 
 isNull :: JValue -> Bool
+
 isNull v = v == JNull

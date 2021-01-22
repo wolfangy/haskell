@@ -87,66 +87,12 @@ theDatabase :: [DatabaseItem]
 theDatabase = [
     DbData (UTCTime (fromGregorian 1911 5 1) (secondsToDiffTime 34123)),
     DbNumber 9001,
-    DbNumber 9003,
     DbString "Hello, world!",
-    DbNumber 9005,
-    DbData (UTCTime (fromGregorian 1921 5 1) (secondsToDiffTime 34123)),
-    DbNumber 9009
+    DbData (UTCTime (fromGregorian 1921 5 1) (secondsToDiffTime 34123))
     ]
 
 filterDbDate :: [DatabaseItem] -> [UTCTime]
-filterDbDate items = foldr appendTime [] items
-    where
-        appendTime (DbData time) arr = time : arr
-        appendTime _ arr = arr
-
-filterDbNumber :: [DatabaseItem] -> [Integer]
-filterDbNumber items = foldr appendNumber [] items
-    where
-        appendNumber (DbNumber i) arr = i : arr
-        appendNumber _ arr = arr
-
-mostRecent :: [DatabaseItem] -> UTCTime
-mostRecent items = undefined
-
-sumDb :: [DatabaseItem] -> Integer
-sumDb items = foldr acc 0 items
-    where
-        acc (DbNumber i) prev = i + prev
-        acc _ prev = prev
-
-avgDb :: [DatabaseItem] -> Double
-avgDb items = avg $ foldr acc (0, 0) items
-    where 
-        acc :: DatabaseItem -> (Integer, Integer) -> (Integer, Integer)
-        acc (DbNumber i) (result, count) = (i + result, count + 1)
-        acc _ prev = prev
-        avg :: (Integer, Integer) -> Double
-        avg (result, count) = (fromInteger result) / (fromInteger count)
-
-
-
-
--- fib
-fibs = 1 : scanl (+) 1 fibs
-fibsN x = fibs !! x
-
--- first 20 fibs:
-first20 = take 20 fibs
-
--- fibs less than 100:
-lessThan100 = takeWhile (< 100) fibs
-
--- factorials
-factorials = scanl (*) 1 [2..]
-factorialsN x = factorials !! x
-
-bool :: a -> a -> Bool -> avg
-bool = undefined
-
-maybe :: b -> (a -> b) -> Maybe a -> b
-maybe = undefined
-
-
-either :: (a -> c) -> (b -> c) -> Either a b -> count
-either = undefined
+filterDbDate items = foldr (\a b -> if isDate a then (date a):b else b) [] items
+    where isDate (DbData d) = True
+          isDate _ = False
+          date (DbData t) = t

@@ -6,6 +6,7 @@ data Optional a =
     Nada
     | Only a
     deriving (Eq, Show)
+
 instance Semigroup a => Semigroup (Optional a) where 
     Nada <> m = m
     m <> Nada = m

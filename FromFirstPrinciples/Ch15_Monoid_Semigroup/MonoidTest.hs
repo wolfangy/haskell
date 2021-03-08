@@ -61,5 +61,6 @@ main = do
     quickCheck (monoidLeftIdentity :: Bull -> Bool)
     quickCheck (monoidRightIdentity :: Bull -> Bool)
     quickCheck (monoidAssoc :: FirstMappend)
+
     quickCheck (monoidLeftIdentity :: FirstId)
     quickCheck (monoidRightIdentity :: FirstId)

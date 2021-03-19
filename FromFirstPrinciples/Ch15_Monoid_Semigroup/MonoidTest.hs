@@ -36,8 +36,8 @@ type BullMappend = Bull -> Bull -> Bull -> Bool
 newtype First' a = First' { getFirst' :: Optional a} deriving (Eq, Show)
 
 instance (Semigroup a) => Semigroup (First' a) where
-    (First' { getFirst' = x }) <> (First' { getFirst' = y}) =
-        First' { getFirst' = x <> y }
+    (First' f) <> (First' g) =
+        First' { getFirst' = f <> g }
 
 instance (Monoid a) => Monoid (First' a) where
     mempty = First' { getFirst' = Nada }
@@ -60,7 +60,7 @@ main = do
     quickCheck (monoidAssoc :: BullMappend)
     quickCheck (monoidLeftIdentity :: Bull -> Bool)
     quickCheck (monoidRightIdentity :: Bull -> Bool)
-    quickCheck (monoidAssoc :: FirstMappend)
 
+    quickCheck (monoidAssoc :: FirstMappend)
     quickCheck (monoidLeftIdentity :: FirstId)
     quickCheck (monoidRightIdentity :: FirstId)

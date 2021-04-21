@@ -5,8 +5,8 @@ import Data.Foldable
 import Data.Functor
 
 -- class Foldable (t:: * -> *) where
--- fold :: Monoid m => t m -> m
 -- foldMap :: Monoid m => (a -> m) -> t a -> m
+-- foldr :: (a -> b -> b) -> b -> t a -> b
 
 foldSum = fold $ map Sum [1..5]
 foldSum' = foldMap Sum [1..5]

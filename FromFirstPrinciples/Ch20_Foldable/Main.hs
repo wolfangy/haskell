@@ -34,11 +34,20 @@ foldMap_x5' = foldMap (*5) $ map Sum [1..3]
 foldr_x5' = foldr (*) 5 $ map Sum [1..3]
 -- ((Sum 1) * ((Sum 2) * ((Sum 3) * 5)))
 
--- If only trying to fold only contain one value, Monid instance won't change the behavior
+-- If only trying to fold only contain one value,
+-- Monid instance won't change the behavior
+-- !! Still need to specify the Monoid to satisfy the type checker
+--
 --
 valueWontAffect = foldMap (*5) (Just 100) :: Product Integer
+-- (Product (100 * 5)) <> (Product mempty)
+--
 valueWontAffect' = foldMap (*5) (Just 100) :: Sum Integer
+
 valueWontAffect'' = foldMap (*5) [100] :: Product Integer
+
+different = foldMap (*5) Nothing :: Product Integer
+different' = foldMap (*5) Nothing :: Sum Integer
 
 -- toList :: t a -> [a]
 --

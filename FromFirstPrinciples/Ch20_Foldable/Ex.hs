@@ -19,7 +19,7 @@ product' t = foldMap Product t
 elem :: (Foldable t, Eq a) => a -> t a -> Bool
 elem x t = getAny $ foldMap (\a -> Any(a == x)) t
 elem' x = foldr (\a b -> b || (a == x)) True
-
+elem'' x = getAny . foldMap (Any . (==x))
 
 -- 4.
 minimum :: (Foldable t, Ord a) => t a -> Maybe a
@@ -45,6 +45,7 @@ maximum = foldr
 -- 6.
 null :: (Foldable t) => t a -> Bool
 null = foldr (\_ _ -> False) True
+null' xs = getAll $ foldMap (\_ -> All False) xs
 
 -- 7.
 length :: (Foldable t) => t a -> Int
@@ -53,6 +54,8 @@ length = foldr (\a b -> b + 1) 0
 -- 8.
 toList :: (Foldable t) => t a -> [a]
 toList = foldr (:) []
+toList' :: (Foldable t) => t a -> [a]
+toList' = foldMap (:[])
 
 -- 9.
 fold' :: (Foldable t, Monoid m) => t m -> m
@@ -103,6 +106,5 @@ instance Foldable (Three' a) where
 -- filter function for Foldable types
 filterF :: (Applicative f, Foldable t, Monoid (f a))
     => (a -> Bool) -> t a -> f a
-filterF f ta =
-    foldMap (\a -> if f a then pure a else mempty) ta
+filterF predicate = foldMap (\a -> if predicate a then pure a else mempty)
 

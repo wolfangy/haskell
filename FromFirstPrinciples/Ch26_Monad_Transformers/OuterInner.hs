@@ -20,6 +20,8 @@ eitherUnwrap = runExceptT maybeUnwrap
 readerUnwrap :: () -> IO (Either String (Maybe Int))
 readerUnwrap = runReaderT eitherUnwrap
 
+val = const . Right . Just $ 1
+
 sameResult = (const . Right . Just $ 1) ()
 
 -- base monad : what is structurally outermost

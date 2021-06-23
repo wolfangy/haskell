@@ -4,7 +4,7 @@ module Lib where
 
 import qualified Data.ByteString.Lazy.Char8 as L8
 import qualified Data.ByteString.Lazy as L
-import Data.Char (isSpace)
+import Data.Char (isSpace, chr)
 import Data.Int (Int64)
 import Data.Word
 
@@ -28,8 +28,14 @@ newtype Parse a = Parse {
     runParse :: ParseState -> Either String (a, ParseState)
 }
 
+instance Functor Parse where
+    fmap f (Parse run) = Parse $
+        \state -> case run state of
+            Left err -> Left err
+            Right (var, newState) -> Right (f var, newState)
+
 byteStringPack = L8.pack
-bystringUnCons = L8.uncons
+byteStringUnCons = L8.uncons
 
 identity :: a -> Parse a
 identity a = Parse (\s -> Right(a, s))
@@ -52,7 +58,7 @@ putState s = Parse (\_ -> Right ((), s))
 (==>) :: Parse a -> (a -> Parse b) -> Parse b
 firstParser ==> nextParserFac = Parse chaindParser
     where
-        chaindParser initState = 
+        chaindParser initState =
             case runParse firstParser initState of
                 Left errMessage ->
                     Left errMessage
@@ -68,8 +74,8 @@ parseByte =
         \initState ->
             case L.uncons (string initState) of
                 Nothing -> bail "no more input"
-                Just (byte, remainder) -> 
-                    putState newState ==> \_ -> 
+                Just (byte, remainder) ->
+                    putState newState ==> \_ ->
                         identity byte
                     where
                         newState = initState {
@@ -95,11 +101,11 @@ parseP5 :: L.ByteString -> Maybe (Greymap, L.ByteString )
 parseP5 s = do
     content <- matchHeader (L8.pack "P5") s
     v <- skipSpace ((), content)
-    widthContent@(width, restOfWidth) <- getNat . snd $ v 
+    widthContent@(width, restOfWidth) <- getNat . snd $ v
     v <- skipSpace widthContent
     heightAndContent@(height, restOfHeight) <- getNat. snd $ v
     v <- skipSpace heightAndContent
-    (maxGray, restOfMaxGrey) <- getNat . snd $ v 
+    (maxGray, restOfMaxGrey) <- getNat . snd $ v
     v <- getBytes 1 restOfMaxGrey
     (bitmap, rest) <- getBytes (width * height) . snd $ v
     return (Greymap width height maxGray bitmap, rest)
@@ -134,3 +140,15 @@ simpleParse = undefined;
 betterParse :: ParseState -> Either String (a, ParseState)
 betterParse = undefined;
 
+w2c :: Word8 -> Char
+w2c = chr . fromIntegral
+
+parseChar :: Parse Char
+parseChar = w2c <$> parseByte
+
+peekByte :: Parse (Maybe Word8)
+peekByte = fmap fst . L.uncons . string <$> getState
+
+peekChar :: Parse (Maybe Char)
+--peekChar = (fmap . fmap) w2c peekByte
+peekChar = fmap w2c <$> peekByte

@@ -4,12 +4,12 @@ module Lib where
 
 import qualified Data.ByteString.Lazy.Char8 as L8
 import qualified Data.ByteString.Lazy as L
-import Data.Char (isSpace, chr)
+import Data.Char (isSpace, chr, isDigit)
 import Data.Int (Int64)
 import Data.Word
 
 data Greymap = Greymap {
-        greyWidth :: Int
+          greyWidth :: Int
         , greyHeight :: Int
         , greyMax :: Int
         , greyData :: L.ByteString
@@ -20,7 +20,7 @@ instance Show Greymap where
                             ++ " " ++ show m
 
 data ParseState = ParseState {
-    string :: L.ByteString
+      string :: L.ByteString
     , offset :: Int64
 } deriving (Show)
 
@@ -60,8 +60,7 @@ firstParser ==> nextParserFac = Parse chaindParser
     where
         chaindParser initState =
             case runParse firstParser initState of
-                Left errMessage ->
-                    Left errMessage
+                Left errMessage -> Left errMessage
                 Right (firstResult, newState) ->
                     runParse (nextParserFac firstResult) newState
 
@@ -152,3 +151,71 @@ peekByte = fmap fst . L.uncons . string <$> getState
 peekChar :: Parse (Maybe Char)
 --peekChar = (fmap . fmap) w2c peekByte
 peekChar = fmap w2c <$> peekByte
+
+parseWhile :: (Word8 -> Bool) -> Parse [Word8]
+parseWhile p = (fmap p <$> peekByte) ==>
+                \mp -> if mp == Just True
+                        then parseByte ==> \b ->
+                            (b:) <$> parseWhile p
+                        else identity []
+
+parseWhileVerbose :: (Word8 -> Bool) -> Parse [Word8]
+parseWhileVerbose p =
+    peekByte ==>
+    \mc ->
+        case mc of
+            Nothing -> identity []
+            Just c
+                | p c -> parseByte ==> \b ->
+                            parseWhileVerbose p ==> \bs ->
+                                identity (b : bs)
+                | otherwise -> identity []
+
+
+parseWhileWith :: (Word8 -> a) -> (a -> Bool) -> Parse [a]
+parseWhileWith f p = fmap f <$> parseWhile (p . f)
+
+parseNat :: Parse Int
+parseNat = parseWhileWith w2c isDigit ==>
+    \digits ->
+        if null digits
+        then bail "no more input"
+        else let n = read digits
+            in if n < 0
+                then bail "integer overflow"
+                else identity n
+
+(==>&) :: Parse a -> Parse b -> Parse b
+p ==>& f = p ==> const f
+
+skipSpaces :: Parse()
+skipSpaces = parseWhileWith w2c isSpace ==>& identity ()
+
+assert :: Bool  -> String -> Parse ()
+assert True _ = identity ()
+assert False err = bail err
+
+parseBytes :: Int -> Parse L.ByteString
+parseBytes n =
+    getState ==> \st ->
+        let n' = fromIntegral n
+            (h, t) = L.splitAt n' (string st)
+            st' = st { offset = offset st + L.length h, string = t }
+        in
+            putState st' ==>&
+            assert (L.length  h == n') "end of input" ==>&
+            identity h
+
+parseRawPGM :: Parse Greymap
+parseRawPGM = 
+    parseWhileWith w2c notWhite ==> \header -> skipSpaces ==>&
+    assert (header == "P5") "invalid raw header" ==>&
+    parseNat ==> \width -> skipSpaces ==>&
+    parseNat ==> \height -> skipSpaces ==>&
+    parseNat ==> \maxGrey ->
+    parseByte ==>&
+    parseBytes (width * height) ==> \bitmap -> 
+        identity (Greymap width height maxGrey bitmap)
+    where
+        notWhite :: Char -> Bool
+        notWhite c = c `notElem` ['\t', '\n', ' ']

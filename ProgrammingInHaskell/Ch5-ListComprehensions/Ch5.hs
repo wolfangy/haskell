@@ -1,4 +1,4 @@
-module Main where
+module Ch5 where
 
 import Data.Char
 import Data.List
@@ -104,6 +104,3 @@ crack xs = encode (-factor) xs
         factor = head (positions (minimum chitab) chitab)
         chitab = [chiSqr (rotate n table') table | n <- [0..25]]
         table' = freqs xs
-
-main :: IO ()
-main = undefined

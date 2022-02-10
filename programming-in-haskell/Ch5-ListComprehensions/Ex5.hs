@@ -1,4 +1,4 @@
-module Ex where
+module Ex5 where
 
 import Ch5
 
@@ -29,7 +29,7 @@ perfects n = [v | v <- [1 .. n], v == (sum . init . factors $ v)]
 e7 :: [(Int, Int)]
 e7 = [(x, y) | x <- [1, 2], y <- [3, 4]]
 
-e7' = [[(x, y) | y <- [3, 4]] | x <- [1, 2]]
+e7' = concat [[(x, y) | y <- [3, 4]] | x <- [1, 2]]
 
 -- 8.
 positions'' :: Eq a => a -> [a] -> Int

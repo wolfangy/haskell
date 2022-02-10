@@ -1,19 +1,30 @@
-> module Ch6 where
+Recursie functions
+
+fac :: Int -> Int
+fac 0 = 1               -- the base case
+fac n = n * fac (n-1)   -- the recursive case
+
+
+6.2 Recursion on list
+
+> product' :: Num a => [a] -> a
+> product' [] = 1
+> product' (n:ns) = n * product' ns
 
 > reverse' :: [a] -> [a]
 > reverse' [] = []
 > reverse' (x:xs) = reverse' xs ++ [x]
 
 
-> (+<) :: [a] -> [a] -> [a]
-> [] +< ys = ys
-> xs +< [] = xs
-> (x: xs) +< ys = x : (xs +< ys)
+> (<->) :: [a] -> [a] -> [a]
+> [] <-> ys = ys
+> xs <-> [] = xs
+> (x: xs) <-> ys = x : (xs <-> ys)
 
 > insert :: Ord a => a -> [a] -> [a]
 > insert n [] = [n]
 > insert n (x:xs)
->           | n <= x     = x : n : xs
+>           | n <= x     = n : x : xs
 >           | otherwise  = x : insert n xs 
 
 > isort :: Ord a => [a] -> [a]
@@ -23,7 +34,12 @@
 > isort' :: Ord a => [a] -> [a]
 > isort' = foldr insert []
 
-* Multiple arguments 
+> init' :: [a] -> [a]
+> init' [] = error "Cannot process empty array"
+> init' [_] = []
+> init' (x:xs) = x : init' xs
+
+6.3 Multiple arguments 
 
 > zip' :: [a] -> [b] -> [(a, b)]
 > zip' _ [] = []
@@ -31,7 +47,7 @@
 > zip' (x:xs) (y:ys) = (x, y) : zip' xs ys
 
 
-* Multiple Recursion
+6.4 Multiple Recursion
 
 > fib :: Int -> Int
 > fib 0 = 0
@@ -42,7 +58,7 @@
 > qsort [] = []
 > qsort (x:xs) = qsort (filter (<=x) xs) ++ [x] ++ qsort (filter (>x) xs)
 
-* Mutual recursion
+6.5 Mutual recursion
 
 > even' :: Int -> Bool 
 > even' n

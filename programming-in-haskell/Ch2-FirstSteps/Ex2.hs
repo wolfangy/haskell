@@ -1,4 +1,4 @@
-module Ex where
+module Ex2 where
 
 n = a `div` length xs
     where

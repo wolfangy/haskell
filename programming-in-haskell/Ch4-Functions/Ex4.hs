@@ -1,6 +1,7 @@
-module Ex where
+module Ex4 where
 
 -- 1.
+
 halve :: [a] -> ([a], [a])
 halve xs =  let l = length xs
                 h = l `div` 2
@@ -9,13 +10,16 @@ halve xs =  let l = length xs
                 then splitAt h xs
                 else ([], [])
 
+halve' xs = (take half xs, drop half xs)
+    where half = div (length xs) 2
 
 -- 2.
+
 third :: [a] -> [a]
 third []        = []
 third [_]       = []
 third [_,_]     = []
-third [_,_,x,_] = [x]
+third [_,_,x]   = [x]
 
 third' :: [a] -> [a]
 third' xs = [xs!!2 | length xs >=2]
@@ -24,6 +28,7 @@ third'' :: [a] -> [a]
 third'' = (:[]) . head . tail . tail
 
 -- 3.
+
 safetail :: [a] -> [a]
 safetail xs
     | null xs = []
@@ -35,6 +40,7 @@ safetail' (_:xs) = xs
 
 
 -- 4.
+
 (||) :: Bool -> Bool  -> Bool
 False || False  = False
 False || True   = True
@@ -42,6 +48,7 @@ True  || False  = True
 True  || True   = True
 
 -- 5.
+
 (&&) :: Bool -> Bool -> Bool
 (&&) l r =
     if l == True
@@ -52,6 +59,7 @@ True  || True   = True
         else False
 
 -- 6.
+
 (&|) :: Bool -> Bool -> Bool
 (&|) ctrl val =
     if ctrl
@@ -59,6 +67,7 @@ True  || True   = True
         else False
 
 -- 7.
+
 mult :: Int -> Int -> Int -> Int
 mult = \x -> \y -> \z -> x * y * z
 

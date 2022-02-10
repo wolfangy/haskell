@@ -3,7 +3,14 @@ module Ch5 where
 import Data.Char
 import Data.List
 
+-- 5.1 Basic concepts
+
 b1 = [x ^ 2 | x <- [1 .. 5]]
+
+{-
+    `<-` is read as is drawn from
+    `x <- [1..5]` is called a generator
+-}
 
 b2 = [(x, y) | x <- [1, 2, 3], y <- [4, 5, 6]]
 
@@ -12,13 +19,18 @@ b3 = [(x, y) | x <- [1 .. 3], y <- [x .. 3]]
 concat' :: [[a]] -> [a]
 concat' xss = [x | xs <- xss, x <- xs]
 
+-- the wildcard pattern _ is sometimes useful in generators
+-- to discard certain elements from a list
+
 firsts' :: [(a, b)] -> [a]
 firsts' xs = [a | (a, _) <- xs]
 
 length' :: [a] -> Int
 length' xs = sum [1 | _ <- xs]
 
--- Guards
+-- 5.2 Guards
+-- List comprehension can also use logical expression called guards to filter values
+-- produced by earlier generator
 
 factors :: Int -> [Int]
 factors n = [x | x <- [1 .. n], n `mod` x == 0]
@@ -32,19 +44,19 @@ primes n = [x | x <- [1 .. n], prime x]
 find' :: Eq a => a -> [(a, b)] -> [b]
 find' k map = [b | (a, b) <- map, a == k]
 
--- zip function
+-- 5.3 zip function
 z1 = zip ['a', 'b', 'c'] [1..4]
 
 pairs :: [a] -> [(a,a)]
 pairs xs = zip xs (tail xs)
 
-sortted :: Ord a => [a] -> Bool
-sortted xs = and [a <= b| (a, b)<-pairs xs]
+sorted :: Ord a => [a] -> Bool
+sorted xs = and [a <= b| (a, b)<-pairs xs]
 
 positions :: Eq a => a -> [a] -> [Int]
 positions v xs = [ i | (i, x) <- zip [0..] xs, v == x]
 
--- String
+-- 5.4 String
 lowers :: String -> Int
 lowers xs = length [x | x <- xs, x >= 'a' && x <= 'z']
 
@@ -61,14 +73,14 @@ int2letter :: Int -> Char
 int2letter v = chr (ord 'a' + v)
 
 shift :: Int -> Char -> Char
-shift deta c
+shift delta c
     | isLower c = let v = letter2int c
-                      nv =((v + deta) `mod` 26)
+                      nv =((v + delta) `mod` 26)
                   in  int2letter nv
     | otherwise = c
 
 encode :: Int -> String -> String
-encode deta xs = [shift deta x | x <- xs]
+encode delta xs = [shift delta x | x <- xs]
 
 -- Cracking the cipher
 table :: [Float]

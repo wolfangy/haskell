@@ -1,4 +1,4 @@
-module Ex where
+module Ex7 where
 
 -- 1
 mapFilter = map . filter

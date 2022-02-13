@@ -2,18 +2,37 @@ module Vote where
 
 import Data.List
 
+{- 
+Every person has one vote,
+and the candidate with the largest number
+of votes is declared the winner.
+-}
+
 votes :: [String]
 votes = ["Red", "Blue", "Green", "Blue", "Blue", "Red"]
 
 count :: Eq a => a -> [a] -> Int
 count x = length . filter (== x)
 
+-- to remove duplicate items from a list:
+
 rmdups :: Eq a => [a] -> [a]
 rmdups [] = []
 rmdups (x : xs) = x : filter (/= x) (rmdups xs)
 
+rmdups' :: Eq a => [a] -> [a]
+rmdups' = foldr addToSet []
+    where 
+      addToSet n [] = [n]
+      addToSet n xss@(x: xs)
+              | n == x = xss
+              | otherwise = addToSet n xs ++ [x]
+
 result :: Ord a => [a] -> [(Int, a)]
 result vs = sort [(count v vs, v) | v <- rmdups vs]
+
+-- pairs are ordered lexicographically
+
 
 winner :: Ord a => [a] -> a
 winner = snd . last . result
@@ -27,9 +46,7 @@ ballots =
   [ ["Red", "Green"],
     ["Blue"],
     ["Green", "Red", "Blue"],
-    ["Blue"],
-    ["Green"],
-    ["Red"],
+    ["Blue", "Green", "Red"],
     ["Green"]
   ]
 

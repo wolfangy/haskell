@@ -99,7 +99,9 @@ altMap' l r xs = foldr (\(i, v) acc -> if even i then r v : acc else l v : acc) 
 type Digit = Int
 
 parse :: [Char] -> [Digit]
-parse = map (\x -> read x :: Digit)
+parse = map (read . (pure :: Char -> String))
 
 luhn :: [Digit] -> Bool
 luhn    = (== 0) . (`mod` 2) . sum . reverse . map (\x -> if x > 9 then x - 9 else x) . altMap id (*2) . reverse
+
+testLuhn = luhn . parse

@@ -1,15 +1,17 @@
-{-# OPTIONS_GHC -Wno-incomplete-patterns #-}
+{-# LANGUAGE GADTs #-}
+
 module Tault where
 
 import Data.Maybe
 import qualified Lib as L
 
-data Prop = Const Bool
-            | Var Char
-            | Not Prop
-            | And Prop Prop
-            | Imply Prop Prop
-            deriving (Eq, Show)
+data Prop where
+    Const :: Bool -> Prop
+    Var :: Char -> Prop
+    Not :: Prop -> Prop
+    And :: Prop -> Prop -> Prop
+    Imply :: Prop -> Prop -> Prop
+    deriving (Eq, Show)
 
 type Subst = L.Assoc Char Bool
 
@@ -32,12 +34,11 @@ p3 = Imply (Var 'A') (And (Var 'A') (Var 'B'))
 p4 :: Prop
 p4 = Imply (And (Var 'A') (Imply (Var 'A') (Var 'B'))) (Var 'B')
 
-
 eval :: Subst -> Prop -> Bool
 eval _ (Const b)    = b
 eval s (Var x)      = find x s
 eval s (Not p)      = not (eval s p)
-eval s (And p q)    =  eval s p && eval s q
+eval s (And p q)    = eval s p && eval s q
 eval s (Imply p q)  = eval s p <= eval s q
 
 vars :: Prop -> [Char]
@@ -55,6 +56,20 @@ bools' n = map (reverse . map conv . make n . L.int2bin) range
         conv 0      = False
         conv 1      = True
 
+{- 
+bool 3 contains two copies of bool 2:
+
+    False   |   False   False
+    False   |   False   True
+    False   |   True    False
+    False   |   True    True
+    -----------------------------
+    True    |   False   False
+    True    |   False   True
+    True    |   True    False
+    True    |   True    True
+-}
+
 bools :: Int -> [[Bool]]
 bools 0 = [[]]
 bools n = map (False :) bss ++ map (True:) bss
@@ -66,4 +81,5 @@ substs p = map (zip vs) (bools (length vs))
 
 isTaut :: Prop -> Bool
 isTaut p = all (`eval` p) (substs p)
+
 isTaut' p = and [ eval s p |s <- substs p]

@@ -1,13 +1,5 @@
 > {-# LANGUAGE GADTs, EmptyDataDecls, KindSignatures, RankNTypes, ScopedTypeVariables #-}
 
-> module Lib
->     ( 
->           Assoc(..)
->         , find
->         , int2bin
->         , rmdups
->     ) where
-
 8.1  Type declarations
 
 > type Pos = (Int, Int)
@@ -172,15 +164,3 @@ New types declared using data and newtype mechanisms can also be recursive.
 > flatten :: Tree a -> [a]
 > flatten (Leaf l) = [l] 
 > flatten (Node l n r) = flatten l ++ [n] ++ flatten r
-
-
-> int2bin :: Int -> [Int]
-> int2bin 0 = []
-> int2bin n = n `mod` 2 : int2bin (n `div` 2)
-
-> rmdups :: Eq a => [a] -> [a]
-> rmdups [] = []
-> rmdups (x:xs) = x : filter (/=x) (rmdups xs)
- 
-> rmdups' :: Eq a => [a] -> [a]
-> rmdups' = foldr (\a b -> a : filter (/=a) b) []

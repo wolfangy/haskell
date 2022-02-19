@@ -3,13 +3,15 @@
 module Expr where
 
 data Expr where
-    Val :: Int -> Expr
-    Add :: Expr -> Expr -> Expr
+    Val     :: Int -> Expr
+    Add     :: Expr -> Expr -> Expr
+    -- Mult    :: Expr -> Expr -> Expr
     deriving(Eq, Show)
 
 value :: Expr -> Int
-value (Val n)   = n
-value (Add x y) = value x + value y
+value (Val n)       = n
+value (Add x y)     = value x + value y
+-- value (Mult x y)    = value x * value y
 
 {-
 value (Add (Add (Val 2) (Val 3)) (Val 4))
@@ -32,7 +34,8 @@ of their evaluation.
 
 data Op where
     EVAL :: Expr -> Op
-    ADD :: Int -> Op
+    ADD  :: Int -> Op
+    -- MULT :: Int -> Op
 
 type Cont = [Op]
 
@@ -53,6 +56,8 @@ eval (Add x y) c = eval x (EVAL y : c)
 -- that the second argument y should be evaluated
 -- once the evaluation of the first argument is completed.
 
+-- eval (Mult x y) c = eval x (EVAL y : c)
+
 exec :: Cont -> Int -> Int
 exec [] n           = n
 -- if the control stack is empty,
@@ -66,12 +71,15 @@ exec (EVAL y : c) n = eval y (ADD n : c)
 -- current integer argument n should be added
 -- together with the result of evaluating y
 -- once this is completed.
+
 exec (ADD n : c) m  = exec c (n + m)
 -- if the top of the stack is an operation ADD n,
 -- evaluation of the two arguments of an addition
 -- expression is now complete, and we execute the
 -- remaining control stack in the context of the sum
 -- of the two resulting integer values.
+
+-- exec (MULT n : c) m = exec c (n * m)
 
 process :: Expr -> Int
 process e = eval e []

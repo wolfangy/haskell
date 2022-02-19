@@ -1,0 +1,1 @@
+ghc -O2 main.hs -hidir 'bin' -odir 'bin' -o countdown

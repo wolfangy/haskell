@@ -1,7 +1,6 @@
 {-# LANGUAGE GADTs #-}
 
 module Lib where
-import Distribution.Types.LocalBuildInfo (componentNameTargets')
 
 data Op where
   Add :: Op

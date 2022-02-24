@@ -1,6 +1,9 @@
+{-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
+{-# HLINT ignore "Used otherwise as a pattern" #-}
 module Ex10 where
 
 import Nim(putRow, Board)
+import Hangman(getCh)
 
 -- 1. 
 
@@ -47,3 +50,16 @@ askNumber' :: IO Int
 askNumber' = do
     putStr ": "
     toInt <$> getLine
+
+-- 6.
+
+readLine :: IO String
+readLine = readLineWithBuffer []
+    where
+        readLineWithBuffer xs = do
+            c <- getCh
+            case (c, xs) of
+                ('\DEL', []) -> readLineWithBuffer []
+                ('\DEL', xs) -> readLineWithBuffer $ init xs
+                ('\n', xs) -> return xs
+                otherwise -> readLineWithBuffer $ xs ++ [c]

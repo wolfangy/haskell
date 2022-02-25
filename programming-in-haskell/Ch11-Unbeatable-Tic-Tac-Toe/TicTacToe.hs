@@ -62,6 +62,30 @@ putGrid =
     where
         bar = [replicate ((size * 4) - 1) '-']
 
+-- rs = map showRow [[B, O, O], [O, X, O], [X, X, X]] ==> rs = [["   |   |   ", "   | O | O ", "   |   |   "],
+--                                                              ["   |   |   ", " O | X | O ", "   |   |   "],
+--                                                              ["   |   |   ", " X | X | X ", "   |   |   "]]
+--
+-- bs = interleave bar  ==> bs = [  ["   |   |   ", "   | O | O ", "   |   |   "],
+--                                  ["-----------"], 
+--                                  ["   |   |   ", " O | X | O ", "   |   |   "],
+--                                  ["-----------"],
+--                                  ["   |   |   ", " X | X | X ", "   |   |   "] ]
+--
+-- cs = concat bs       ==> cs = [  "   |   |   ",
+--                                  "   | O | O ",
+--                                  "   |   |   ",
+--                                  "-----------",
+--                                  "   |   |   ",
+--                                  " O | X | O ",
+--                                  "   |   |   ",
+--                                  "-----------",
+--                                  "   |   |   ",
+--                                  " X | X | X ",
+--                                  "   |   |   "]
+--
+-- us = unlines cs      ==> us = "   |   |   \n   | O | O \n   |   |   \n-----------\n   |   |   \n O | X | O \n   |   |   \n-----------\n   |   |   \n X | X | X \n   |   |   \n"
+
 
 showRow :: [Player] -> [String]
 showRow = beside . interleave bar . map showPlayer
@@ -73,7 +97,11 @@ showRow = beside . interleave bar . map showPlayer
 -- player = [X, O, O]
 -- let ps = map shoRow player           ==> ps = [["   "," X ","   "],["   "," O ","   "],["   "," O ","   "]]
 -- let bs = interleave bar ps           ==> bs = [["   "," X ","   "],["|","|","|"],["   "," O ","   "],["|","|","|"],["   "," O ","   "]]
--- let fs = fordr1 (zipWith (++)) bs    ==> fs = ["   |   |   "," X | O | O ","   |   |   "]
+-- let fs = fordr1 (zipWith (++)) bs    ==> fs = ... zipWith (++) ["   |", " X |", "   |"] ["   ", " O ", "   "] ...
+--                                      ==> fs = ... zipWith (++) ["   |   ", " X | O ", "   |   "] ["|", "|", "|"] ...
+--                                      ==> fs = ... zipWith (++) ["   |   |", " X | O |", "   |   |"] ["   ", " O ", "   "]
+--                                          fs = ["   |   |   "," X | O | O ","   |   |   "]
+--
 
 showPlayer :: Player -> [String]
 showPlayer O = ["   ", " O ", "   "]

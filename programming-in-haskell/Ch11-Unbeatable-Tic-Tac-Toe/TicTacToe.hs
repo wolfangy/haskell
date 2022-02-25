@@ -45,7 +45,7 @@ wins player grid = any line (rows ++ cols ++ diagonals)
         line = all (== player)
         rows = grid
         cols = transpose grid
-        diagonals = [diag grid, diag (map reverse g)]
+        diagonals = [diag grid, diag (map reverse grid)]
 
 diag :: Grid -> [Player]
 diag g = [g !! n !! n | n <- [0..size - 1]]
@@ -62,12 +62,18 @@ putGrid =
     where
         bar = [replicate ((size * 4) - 1) '-']
 
+
 showRow :: [Player] -> [String]
 showRow = beside . interleave bar . map showPlayer
     where
         beside = foldr1 (zipWith (++)) 
         bar    = replicate 3 "|"
 
+-- e.g. 
+-- player = [X, O, O]
+-- let ps = map shoRow player           ==> ps = [["   "," X ","   "],["   "," O ","   "],["   "," O ","   "]]
+-- let bs = interleave bar ps           ==> bs = [["   "," X ","   "],["|","|","|"],["   "," O ","   "],["|","|","|"],["   "," O ","   "]]
+-- let fs = fordr1 (zipWith (++)) bs    ==> fs = ["   |   |   "," X | O | O ","   |   |   "]
 
 showPlayer :: Player -> [String]
 showPlayer O = ["   ", " O ", "   "]

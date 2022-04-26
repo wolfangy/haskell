@@ -1,4 +1,4 @@
-module Life where
+module Life (cls, goto) where
 
 
 cls :: IO ()

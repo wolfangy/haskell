@@ -1,0 +1,77 @@
+cabal-version:      2.4
+name:               haskell-in-depth
+version:            0.1.0.0
+
+-- A short (one-line) description of the package.
+-- synopsis:
+
+-- A longer description of the package.
+-- description:
+
+-- A URL where users can report bugs.
+-- bug-reports:
+
+-- The license under which the package is released.
+-- license:
+author:             Juanyong YANG
+maintainer:         juanyong.yang@gmail.com
+
+-- A copyright notice.
+-- copyright:
+-- category:
+extra-source-files: CHANGELOG.md
+
+data-files:
+    data/text/hamlet.txt
+
+library
+    exposed-modules: Ch01Lib
+    hs-source-dirs:  ch01
+    ghc-options:
+        -Wall
+        -Wincomplete-uni-patterns
+    build-depends:
+        base ^>=4.15,
+        text == 1.2.*
+    default-language: Haskell2010
+
+executable vocab1
+    hs-source-dirs:   ch01
+    main-is:          vocab1.hs
+    -- Modules included in this executable, other than Main.
+    -- other-modules:
+    -- LANGUAGE extensions used by modules in this package.
+    -- other-extensions:
+    build-depends:    base ^>=4.15.0.0, text == 1.2.*
+    ghc-options:
+        -Wall
+        -Werror
+    default-language: Haskell2010
+
+executable vocab2
+    hs-source-dirs:   ch01
+    main-is:          vocab2.hs
+    other-modules:    Ch01Lib
+    build-depends:    base ^>=4.15.0.0,
+                      text == 1.2.*
+    ghc-options:
+        -Wall
+        -Wincomplete-uni-patterns
+    default-extensions:
+        OverloadedStrings
+    default-language: Haskell2010
+
+executable vocab3
+    hs-source-dirs:   ch01
+    main-is:          vocab3.hs
+    other-modules:    Ch01Lib
+    build-depends:
+        base ^>=4.15.0.0,
+        text == 1.2.*,
+        fmt,
+    ghc-options:
+        -Wall
+        -Wincomplete-uni-patterns
+    default-extensions:
+        OverloadedStrings
+    default-language: Haskell2010

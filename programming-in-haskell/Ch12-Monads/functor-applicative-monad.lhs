@@ -8,12 +8,14 @@ Monads and more
 12.1 Functors
 
 class Functor f where
+
     fmap :: (a -> b) -> f a -> f b
 
-f must be a parameterised type
+`f` must be a parameterised type
 
-instance Functor [] where
-    fmap = map
+
+    instance Functor [] where
+        fmap = map
 
 > data Tree a where
 >   Leaf :: a -> Tree a
@@ -33,10 +35,10 @@ fmap applies a given function to each such element.
 a container type in normal sense of the term because its values represnet
 input/output actions whose internal structure we do not have access to.
 
-instance Functor IO where
-    fmap g mx = do
-        x <- mx
-        return (g x)
+    instance Functor IO where
+        fmap g mx = do
+            x <- mx
+            return (g x)
 
 Two key benefits of using functors:
 
@@ -52,55 +54,60 @@ exp:
 
 > just2 = inc (Just 1)
 
-Just 2
+    Just 2
 
 > from2to6 = inc [1..5]
 
-[2, 3, 4, 5, 6]
+    [2, 3, 4, 5, 6]
 
 Functor laws:
 
 1. fmap preserves the identity function:
 
-fmap id = id
+    fmap id = id
 
 left side:
 
-id :: a -> a
-fmap id :: f a -> f a
+    id :: a -> a
+
+    fmap id :: f a -> f a
 
 right side:
 
-id :: f a -> f a
+    id :: f a -> f a
 
 2. fmap also preserve functions composition:
 
-fmap (g . h) = fmap g . fmap h
+    fmap (g . h) = fmap g . fmap h
 
-g :: b -> c 
-h :: a -> b
-fmap (g . h) :: f a -> f c
+left side:
 
-fmap h :: f a -> f b
-fmap g :: f b -> f c
+    g :: b -> c 
+    h :: a -> b
+    fmap (g . h) :: f a -> f c
+
+right side:
+
+    fmap h :: f a -> f b
+    fmap g :: f b -> f c
 
 !!! The infix version of `fmap` : "<\$>"
 
 12.2 Applicatives
 
-pure :: a -> f a
+    pure :: a -> f a
 
-(<*>) :: f (a -> b) -> f a -> f b
+    (<*>) :: f (a -> b) -> f a -> f b
 
 `pure` converts a value of type `a` into a structure of type `f a`
 
-`<*>` is a generalised form of function application for which the argument
-function, the argument value, and the result value are all contained in `f`
+`<*>` is a generalised form of function application for which the argument function, 
+the argument value, and the result value are all contained in `f`
 structures.
 
 a typical use of pure and <*> has the following form:
 
-pure g <*> x1 <*> x2 <*> ... <*> xn
+    pure g <*> x1 <*> x2 <*> ... <*> xn
 
 `g` is a curried function that takes n arguments of type `a1 ... an` and produces
 a result of type `b`.
@@ -110,23 +117,23 @@ However in applicative, each argument `xi` has type `f ai` rather than just `ai`
 The class of functors that suppor the `pure` and `<*>` functions are called 
 `applicative functors` or `applicatives`.
 
-class Functor f => Applicative f where
-    pure  :: a -> f a
-    (<*>) :: f (a -> b) -> f a -> f b
+    class Functor f => Applicative f where
+        pure  :: a -> f a
+        (<*>) :: f (a -> b) -> f a -> f b
 
-instance Applicative [] where
-    pure x = [x]
+    instance Applicative [] where
+        pure x = [x]
 
-    gs <*> xs = [g x | g <- gs, x <- xs]
+        gs <*> xs = [g x | g <- gs, x <- xs]
 
 
-instance Applicative IO where
-    pure = return
+    instance Applicative IO where
+        pure = return
 
-    mg <*> mx = do
-        g <- mg
-        x <- mx
-        return (g x)
+        mg <*> mx = do
+            g <- mg
+            x <- mx
+            return (g x)
 
 
 > getChars :: Int -> IO String
@@ -140,8 +147,8 @@ with multiple arguments.
 pure functions to effectful arguments, with the precise form of effects that
 permitted depending on the nature of the underlying functor.
 
-3. Using applicatives also has the important benefit that we can define
-generic functions that can be used with any applicative functor.
+3. Using applicatives also has the important benefit that we can define generic 
+functions that can be used with any applicative functor.
 
 > sequence' :: Applicative f => [f a] -> f [a]
 > sequence' [] = pure []
@@ -167,8 +174,8 @@ pure id <*> x = x0
 
 pure (g x) = pure g <*> pure x
 
-3. when an effectful function is applied to a pure argument, the order in 
-which we evaluate the two components doesn't matter:
+3. when an effectful function is applied to a pure argument, the order in which 
+we evaluate the two components doesn't matter:
 
 x <*> pure y = pure (\ g -> g y) <*> x
 
@@ -185,11 +192,11 @@ g <\$> x1 <*> x2 <*> ... <*> xn <==> pure g <*> x1 <*> x2 <*> ... <*> xn
 
 12.3 Monads
 
-‼ The applicative style restricts us to applying pure functions to
- effectful arguments.
+‼ The applicative style restricts us to applying pure functions to effectful 
+arguments.
 
-`>>=` operator is often called `bind`, because the second argument binds
-the result of the first.
+`>>=` operator is often called `bind`, because the second argument binds the 
+result of the first.
 
 Generalising from the expressions that are built by using the `>>=` 
 operator has the following structure:
@@ -202,11 +209,11 @@ operator has the following structure:
     mn >>= \ xn ->
     f x1 x2 ... xn
 
-The definition of the `>>=` operator ensures that such an expression 
-only succeeds if every component `mi` in the sequence successds.
+The definition of the `>>=` operator ensures that such an expression only succeeds 
+if every component `mi` in the sequence successds.
 
-Haskell provides a special notation for expression of the above form, 
-allowing them to be written in a simpler manner as follows:
+Haskell provides a special notation for expression of the above form, allowing 
+them to be written in a simpler manner as follows:
 
     do
         x1 <- m1
@@ -217,18 +224,17 @@ allowing them to be written in a simpler manner as follows:
         xn <- mn
         f x1 x2 ... xn
 
-The `do` notation is not specific to the type `IO` and `Maybe`, but 
-can be used with any applicative type that forms a monad.
+The `do` notation is not specific to the type `IO` and `Maybe`, but can be used 
+with any applicative type that forms a monad.
 
-class Applicative m => Monad m where
-    return :: a -> m a
-    (>>=)  :: m a -> (a -> m b) -> m b
+    class Applicative m => Monad m where
+        return :: a -> m a
+        (>>=)  :: m a -> (a -> m b) -> m b
 
-return = pure
+    return = pure
 
-!!! Unlike the other monads, for the `IO` type, the `return` and `>>=` 
-are built-in to the language, ranther that being defined within Haskell 
-itself.
+!!! Unlike the other monads, for the `IO` type, the `return` and `>>=` are 
+built-in to the language, ranther that being defined within Haskell itself.
 
 
 The `state` monad

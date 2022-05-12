@@ -38,13 +38,14 @@ take a character and return an integer would have type:
 
     return :: a -> IO a
 
-!! the return provides a bridge from pure expressions without side effects to impure actions 
-with side effects.
+!! the return provides a bridge from pure expressions without side effects to impure 
+actions with side effects.
 
 
 10.4 Sequencing
 
-A sequence of IO actions can be combined into a single composite action using the `do` notation
+A sequence of IO actions can be combined into a single composite action using 
+the `do` notation
 
     do
         v1 <- a1 
@@ -54,8 +55,11 @@ A sequence of IO actions can be combined into a single composite action using th
         return (f v1 v2 ... vn)
 
 1. the layout rule applies, each action in the sequnece must begin in the same column
+
 2. the expression `vi <- ai` is called generator, as the list comprehensions
-3. if the value produced by generator is not required, can be abbreviated as `_ <- ai`
+
+3. if the value produced by generator is not required, can be abbreviated as 
+    `_ <- ai`
 
 action reads three characters, discard the second one:
 

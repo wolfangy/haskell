@@ -218,7 +218,7 @@ parser for spacing (comprising zero or more space)
 
 > space :: Parser ()
 > space = many (sat isSpace) >> return ()
-
+l
 using `nat` to define a parser for integer
 
 > int :: Parser Int

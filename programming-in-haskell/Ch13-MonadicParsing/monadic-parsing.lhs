@@ -107,7 +107,9 @@ types.
 Laws:
      
     empty <|> x = x
+
     x <|> empty = x
+
     x <|> (y <|> z) = (x <|> y) <|> z
 
 
@@ -185,6 +187,9 @@ using `char` we can define a parser `string xs` for the string of characters `xs
 
 !!! `string` only succeeds if the entire target string is consumed from the input.
 
+There is no need to define `many` and `some` ourselves, as suitable default definitions 
+are already provided by the `Alternative` class
+
 `many p` - apply a parser `p` as many times as possible until it fails, with the 
 values from each successful application of `p` being returned in a list.
 
@@ -206,6 +211,14 @@ parser for identifiers (variable names)
 >   xs <- many alphanum
 >   return (x:xs)
 
+To allow the initial char as `_`
+
+> ident' :: Parser String
+> ident' = do
+>   x <- (some $ char '_' ) <|> some lower
+>   xs <- many alphanum
+>   return $ x ++ xs
+
 parser for natual numbers
 
 > nat :: Parser Int
@@ -218,7 +231,7 @@ parser for spacing (comprising zero or more space)
 
 > space :: Parser ()
 > space = many (sat isSpace) >> return ()
-l
+
 using `nat` to define a parser for integer
 
 > int :: Parser Int
@@ -343,3 +356,93 @@ Translate the grammar into a parser
 >               [(n, [])]  -> n
 >               [(_, out)] -> error ("Unused input " ++ out)
 >               []         -> error "Invalid input"
+
+13.9 Calculator
+
+user interface:
+
+> cls :: IO ()
+> cls = putStr "\ESC[2J"
+
+> goto :: Pos -> IO()
+> goto (x, y) = putStr ("\ESC[" ++ show y ++ ";" ++ show x ++ "H")
+
+> beep :: IO()
+> beep = putStr "\BEL"
+
+> type Pos = (Int, Int)
+
+> writeat :: Pos -> String -> IO ()
+> writeat p xs = do
+>    goto p
+>    putStr xs
+
+> box :: [String]
+> box = ["+---------------+",
+>        "|               |",
+>        "+---+---+---+---+",
+>        "| q | c | d | = |",
+>        "+---+---+---+---+",
+>        "| 1 | 2 | 3 | + |",
+>        "+---+---+---+---+",
+>        "| 4 | 5 | 6 | - |",
+>        "+---+---+---+---+",
+>        "| 7 | 8 | 9 | * |",
+>        "+---+---+---+---+",
+>        "| 0 | ( | ) | / |",
+>        "+---+---+---+---+" ]
+
+> buttons :: String
+> buttons = standard ++ extra
+>   where
+>       standard = "qcd=123+456-789*0()/"
+>       extra    = "QCD \ESC\BS\DEL\n"
+
+> showbox :: IO ()
+> showbox = sequence_ [writeat (1, y) b | (y, b) <- zip [1..] box]
+
+> display xs = do
+>   writeat (3, 2) (replicate 13 ' ')
+>   writeat (3, 2) (reverse (take 13 (reverse xs)))
+
+> calc :: String -> IO ()
+> calc xs = do 
+>   display xs
+>   c <- getChar
+>   if elem c buttons then process c xs
+>   else do
+>           beep
+>           calc xs
+
+> process :: Char -> String -> IO ()
+> process c xs 
+>   | elem c "qQ\ESC"       = quit
+>   | elem c "dD\BS\DEL"    = delete xs
+>   | elem c "=\n"          = eval' xs
+>   | elem c "cC"           = clear
+>   | otherwise             = press c xs
+
+> quit :: IO ()
+> quit = goto (1, 14)
+
+> delete :: String -> IO ()
+> delete [] = calc []
+> delete xs = calc (init xs)
+
+> eval' :: String -> IO ()
+> eval' xs = case parse expr xs of
+>               [(n, [])]   -> calc (show n)
+>               _           -> do beep
+>                                 calc xs
+
+> clear :: IO ()
+> clear = calc []
+
+> press :: Char -> String -> IO ()
+> press c xs = calc (xs ++ [c]) 
+
+> run :: IO ()
+> run = do
+>   cls
+>   showbox
+>   clear

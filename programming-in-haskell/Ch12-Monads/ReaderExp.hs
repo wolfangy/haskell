@@ -46,6 +46,11 @@ test2 = do
     putStrLn $ "Modified 's' length: " ++ (show modifiedLen)
     putStrLn $ "Original 's' length: " ++ (show len)
 
+test2' :: Reader String (IO())
+test2' = do
+    len    <- calculateContentLen
+    modLen <- calculateModifiedContentLen
+    return $ putStrLn (show len) >> putStrLn (show modLen)
 
 playReader :: Reader Int String
 playReader = do

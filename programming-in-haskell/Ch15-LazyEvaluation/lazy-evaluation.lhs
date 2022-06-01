@@ -271,3 +271,129 @@ an epxression: `f $! x` behaves in the same way as normal function application
 `f x`, except that the top-level of evaluation of the argument expression `x` is
 forced before the function `f` is applied.
 
+square $! (1+2) proceeds in a `call-by-value` manner:
+
+first: evaluate the 1 + 2 to the value 3
+then: apply the function square
+
+When used with a curried function with multiple arguments, strict application can 
+be used to force top-level evaluation of any combination of arguments.
+
+    (f $! x) y      force top-level evaluation of x
+    (f x) $! y      force top-level evaluation of y
+    (f $! x) $! y   force top-level evaluation of x and y
+
+In Haskell, strict application is mainly used to improve the space performance of 
+programs.
+
+> sumWith :: Int -> [Int] -> Int
+> sumWith v []      = v
+> sumWith v (x:xs)  = sumWith (v + x) xs
+
+use lazy evaluation: 
+    sumWith 0 [1, 2, 3]
+=   {applying sumWith}
+    sumWith (0 + 1) [2, 3]
+=   {applying sumWith}
+    sumWith (0 + 1 + 2) [3]
+=   {applying sumWith}
+    sumWith (0 + 1 + 2 + 3) []
+=   {applying sumWith}
+    ((0 + 1) + 2) + 3
+=   {applying the first +}
+    (1 + 2) + 3
+=   {applying the first +}
+    3 + 3
+=   {applying the first +}
+    6
+
+`sumWith` will construct a summation whose size is proportional to the number of 
+integers in the orginal list, which for a long list may require a significant 
+amount of space.
+
+This behavior could be improved by strict application:
+
+> sumWith' :: Int -> [Int] -> Int
+> sumWith' v [] = v
+> sumWith' v (x:xs) = (sumWith' $! (v + x)) xs
+
+    sumWith' 0 [1, 2, 3]
+=   {applying sumWith'}
+    (sumWith' $! (0 + 1)) [2, 3]
+=   {applying +}
+    (sumWith' $! 1) [2, 3]
+=   {applying $!}
+    sumWith' 1 [2, 3]
+=   {applying sumWith'}
+    (sumWith' $! (1 + 2)) [3]
+=   {applying +}
+    (sumWith' $! 3) [3]
+=   {applying $!}
+    sumWith' 3 [3]
+=   {applying sumWith'}
+    (sumWith' $! (3 + 3)) []
+=   {applying +}
+    (sumWith' $! 6) []
+=   {applying $!}
+    sumWith' 6 []
+=   {applying sumWith'}
+    6
+
+This evaluation requires more steps than previously, due to the additional overhead 
+of using strict application, but now performs each addition as soon as it is 
+introduced, rather than constructing a large summation.
+
+the library `Data.Foldable` provides a strict version of high-order library function 
+`foldl` that forces evaluation of its accumulator prior to processing the tail:
+
+    foldl' :: (b -> a -> b) -> b -> [a] -> b
+    foldl' f v []       = v
+    foldl' f v (x:xs)   = ((foldl' f) $! (f v x)) xs
+
+!!! that strict application `$!` is not a silver bullect that automatically 
+improves the space behaviour. Even for relatively simple examples, the use of 
+strict application is a specialist topic that requires careful consideration of 
+behaviour of lazy evaluation.
+
+
+15.9 Exercises:
+
+4. define an expression `fibs :: [Integer]`
+
+> fibs :: [Integer]
+> fibs = 0 : 1 : [ x + y | (x, y) <- zip fibs (tail fibs)]
+
+5. define functions for Tree
+
+> data Tree a where
+>   Leaf :: Tree a
+>   Node :: Tree a -> a -> Tree a -> Tree a
+>   deriving Show
+
+> repeatT :: a -> Tree a
+> repeatT x = Node Leaf x (repeatT x)
+
+> takeT :: Int -> Tree a -> Tree a
+> takeT 0 _ = Leaf
+> takeT _ Leaf = Leaf
+> takeT n (Node l v r) = Node (takeT (n-1) l) v (takeT (n-1) r)
+
+
+6. Newton's method for computing the square root of `a` (non-negative) floating 
+point:
+
+> sqroot :: Double -> Double
+> sqroot n = snd . head . dropWhile (uncurry $ distance error) $
+>            [ (x, y) | (x, y)  <- zip approximations (tail approximations)]
+>   where
+>       error = 0.000001
+>       approximations = approx n
+
+> distance :: Double -> Double -> Double -> Bool
+> distance dist l r = abs (r - l) > dist
+
+> approx :: Double -> [Double]
+> approx n = iterate next init
+>   where
+>       next a = (a + n / a) / 2
+>       init = 1.0

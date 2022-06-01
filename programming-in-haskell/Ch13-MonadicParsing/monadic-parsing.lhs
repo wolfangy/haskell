@@ -319,10 +319,10 @@ Final modification to the grammar is a simplification.
 
 the symbol `ε` denotes the empty string.
 
-    expr ::= term ( + expr | ε)
-    term ::= factor ( * term | ε)
+    expr ::= term ( + expr | - expr | ε)
+    term ::= factor ( * term | / term | ε)
     factor ::= ( expr ) | nat
-    nat ::= 0 | 1 | 2 | ...
+    int ::= ... | -1 | 0 | 1 | 2 | ...
 
 Translate the grammar into a parser
 
@@ -330,18 +330,22 @@ Translate the grammar into a parser
 > expr = do
 >   t <- term
 >   do
->       symbol "+"
+>       c <- symbol "+" <|> symbol "-"
 >       e <- expr
->       return (t + e)
+>       if c == "+"
+>           then return (t + e)
+>           else return (t - e)
 >    <|> return t
 
 > term :: Parser Int
 > term = do
 >   f <- factor
 >   do
->       symbol "*"
+>       c <- symbol "*" <|> symbol "/"
 >       t <- term
->       return (f * t)
+>       if c == "*"
+>           then return (f * t)
+>           else return (f `div` t)
 >    <|> return f
 
 > factor :: Parser Int
@@ -349,7 +353,7 @@ Translate the grammar into a parser
 >             e <- expr
 >             symbol ")"
 >             return e
->          <|> natural
+>          <|> integer
 
 > eval :: String -> Int
 > eval xs = case (parse expr xs) of
@@ -446,3 +450,16 @@ user interface:
 >   cls
 >   showbox
 >   clear
+
+Exerciese:
+
+1. define a parser comment: begin with the symbol `--` and extend to the end of 
+current line, end by `\n`
+
+> comment :: Parser ()
+> comment = do
+>   char '-'
+>   char '-'
+>   many $ sat isPrint
+>   char '\n'
+>   return ()

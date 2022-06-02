@@ -72,6 +72,7 @@ Replacing `String` with much more efficient `Text`:
 
 **Example: ch01/vocab1.hs**
 
-:exclamation: The module `Data.Text` and `Data.Text.IO` are usually imported with qualifiers to avoid name clashes with `Prelude`;
+:exclamation: The module `Data.Text` and `Data.Text.IO` are usually imported with qualifiers to avoid name clashes with `Prelude`; 
+
 :exclamation: These two modules come with the `text` package.
 

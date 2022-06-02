@@ -37,5 +37,29 @@ sort :: Ord a => [a] -> [a]
 group :: Eq a => [a] -> [[a]]
 ```
 
-**The results we got in GHCi show that we've forgotten about the leading and \trailing punctuation...**
+**The results we got in GHCi show that we've forgotten about the leading and trailing punctuation...**
 
+```haskell
+> text <- readFile "data/texts/hamlet.txt"
+> ws = words $ map toLower text
+-- ws :: [String]
+> ws' = map (takeWhile isLetter . dropWhile (not . isLetter)) ws
+-- isLetter :: Char -> Bool
+-- not :: Bool -> Boo
+
+-- takeWhile :: (a -> Bool) -> [a] -> [a]
+-- dropWhile :: (a -> Bool) -> [a] -> [a]
+
+-- use `dropWhile (not . isLetter)` to remove the leading punctuation
+-- use `takeWhile (isLetter)` to drop the trailing punctuation
+
+-- ws' :: [String]
+
+> cleanedWords = filter (not . null) ws'
+-- null :: Foldable t => t a -> Bool
+-- `filter (not .null)` to filter out the empty string
+
+> uniqueWords = map head $ group $ sort cleanedWords
+
+> length uniqueWords
+```

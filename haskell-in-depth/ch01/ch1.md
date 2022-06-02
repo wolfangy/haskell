@@ -63,3 +63,15 @@ group :: Eq a => [a] -> [[a]]
 
 > length uniqueWords
 ```
+
+**:bomb: The seconde parts of all hyphenated words have been removed due to `takeWhile isLetter`**
+
+## 1.2 From GHCi and String to GHC and Text
+
+Replacing `String` with much more efficient `Text`:
+
+**Example: ch01/vocab1.hs**
+
+:exclamation: The module `Data.Text` and `Data.Text.IO` are usually imported with qualifiers to avoid name clashes with `Prelude`;
+:exclamation: These two modules come with the `text` package.
+

@@ -37,7 +37,7 @@ sort :: Ord a => [a] -> [a]
 group :: Eq a => [a] -> [[a]]
 ```
 
-**The results we got in GHCi show that we've forgotten about the leading and trailing punctuation...**
+**��The results we got in GHCi show that we've forgotten about the leading and trailing punctuation...**
 
 ```haskell
 > text <- readFile "data/texts/hamlet.txt"

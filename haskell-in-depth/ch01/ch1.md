@@ -72,7 +72,62 @@ Replacing `String` with much more efficient `Text`:
 
 **Example: ch01/vocab1.hs**
 
-:exclamation: The module `Data.Text` and `Data.Text.IO` are usually imported with qualifiers to avoid name clashes with `Prelude`; 
+:exclamation: The module `Data.Text` and `Data.Text.IO` are usually imported with qualifiers to avoid name clashes with `Prelude`.
 
 :exclamation: These two modules come with the `text` package.
 
+```haskell
+
+T.dropAround :: (Char -> Bool) -> T.Text -> T.Text
+-- dropAround to remove the leading and tailing characters
+
+T.toCaseFold :: T.Text -> T.Text
+-- toCaseFold converts the whole `Text` value to the folded case and does that significantly faster than mapping with `toLower` over every character.
+-- toCaseFold mainly useful for performing caseless string comparisons.
+```
+
+## 1.3 Functional program as sets of IO actions
+
+**Example: ch01/vocab2.hs**
+
+```haskell
+type Entry = (T.Text, Int)
+type Vocabulary = [Entry]
+
+extractVocab :: T.Text -> Vocabulary
+printAllWords :: Vocabulary -> IO ()
+processTextFile :: FilePath -> IO ()
+
+main :: IO ()
+```
+
+1. Extracting a vocabulary from the file's context
+2. Using the vocabulary to print all words
+
+:exclamation: The `extractVocab` is the only `pure` function in this program.
+
+:wilted_flower: The program stick with `IO` so much that almost every 
+function in the program is an I/O action.
+
+## 1.4 Embracing pure functions
+
+The role of `pure` functions:
+
+* They are easier to combine with other functions
+
+* They cannot break anything in other parts of the program.
+
+* Their correctness can be reasoned
+
+**Example ch01/vocab3.hs**
+
+```haskell
+extractVocab :: Text -> Vocabulary
+
+allWordsReport      :: Vocabulary -> Text
+wordsCountReport    :: Vocabulary -> Text
+frequentWordsReport :: Vocabulary -> Int -> Text
+
+processTextFile :: File -> Bool -> Int -> IO ()
+main :: IO ()
+```

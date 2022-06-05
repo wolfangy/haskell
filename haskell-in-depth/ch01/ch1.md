@@ -131,3 +131,11 @@ frequentWordsReport :: Vocabulary -> Int -> Text
 processTextFile :: File -> Bool -> Int -> IO ()
 main :: IO ()
 ```
+
+:thumbsup: **Qualifying imports**
+We want use `Text` identifier without explicit qualification but keep mandatory qualification for all the other identifiers from this module:
+
+```haskell
+import Data.Text(Text)
+import qualified Data.Text as T
+```

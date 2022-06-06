@@ -210,5 +210,48 @@ Example:
 
 :crystal_ball: The operator `+|` and `|+` are used to including variables and formatters (ordinary functions like `hexF` here)
 
-:crystal_ball: Sometimes we need to call `show` for our variable (if the `fmt` package doesn't know how to convert it to textual form).
+```haskell
+(+|) :: Fmt.Internal.Core.FromBuilder b => Builder -> Builder -> b
 
+(|+) :: (Buildable a, Fmt.Internal.Core.FromBuilder b) => a -> Builder -> b
+
+class Buildable p where
+    build :: p -> Builder
+```
+
+:crystal_ball: Sometimes we need to call `show` for our variable (if the `fmt` package doesn't know how to convert it to textual form). This can be done implicitly via the other pair of operators: `+||` and `||+`.
+
+```haskell
+(+||) :: Fmt.Internal.Core.FromBuilder b => Builder -> Builder -> b
+
+(||+) :: (Buildable a, Fmt.Internal.Core.FromBuilder b) => a -> Builder -> b
+````
+
+:crystal_ball: We can always provide a formatter for our data by writing a function returning `Builder`, which is the data type used for efficiently constructing `Text` values.
+
+```haskell
+
+newtype Builder = 
+    Data.Text.Internal.Builder.Builder {
+        Data.Text.Internal.Builder.runBuilder :: forall s. (Data.Text.Internal.Builder.Buffer s -> GHC.ST.ST s [Data.Text.Internal.Text]) -> Data.Text.Internal.Builder.Buffer s -> GHC.ST.ST s [Data.Text.Internal.Text]
+    }
+
+-- nameF: gives a name to the rest of the output
+nameF :: Builder -> Builder -> Builder
+> namedArrBuilder = nameF (build "Array" ) $ build . T.pack . show $ [1..5]
+-- namedArrBuilder: "Array: [1,2,3,4,5]\n"
+
+-- unlinesF: combine elements of the list into one Builder
+unlinesF :: (Foldable f, Buildable a) => f a -> Builder
+> linesBuilder = unlinesF $ fmap (nameF "item" . build . T.pack . show) [1..5]
+> fmt linesBuilder
+
+-- linesBuilder :
+-- item: 1
+-- item: 2
+-- item: 3
+-- item: 4
+-- item: 5
+
+-- blockListF': formats list elements in the given way and presents them line by line
+```

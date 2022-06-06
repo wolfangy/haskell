@@ -121,6 +121,8 @@ The role of `pure` functions:
 
 **Example ch01/vocab3.hs**
 
+### 1.4.1 Separating I/O from pure functions
+
 ```haskell
 extractVocab :: Text -> Vocabulary
 
@@ -139,3 +141,52 @@ We want use `Text` identifier without explicit qualification but keep mandatory 
 import Data.Text(Text)
 import qualified Data.Text as T
 ```
+
+### 1.4.2 Computing the most frequent words by sorting them
+
+```haskell
+sortBy :: (a -> a -> Ordering) -> [a] -> [a]
+-- requires using a comparison function, which returns the `Ordering` data type (value can be `LT`, `EQ` or `GT`).
+
+-- comparing from Data.Ord module:
+comparing :: Ord a => (b -> a) -> b -> b -> Ordering
+
+-- To sort in descending order:
+wordsByFrequency :: Vocabulary -> Vocabulary
+wordsByFrequency = sortBy (comparing $ Down . snd)
+```
+
+### 1.4.3 Formatting reports
+
+Because we prefer working with `Text`, we need `T.pack` to:
+
+```haskell
+T.pack :: String -> Text
+```
+
+To avoid explict calls the `T.pack` function for `String` literals:
+
+enable: **OverloadedStrings**
+
+in source code file by starting with:
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+```
+
+with GHCi:
+
+```haskell
+> :set -XOverloadedStrings
+```
+
+`Data.Text` module also supply the function to append `Text` values to each other:
+
+```haskell
+T.append :: Text -> Text -> Text
+```
+
+The issue with only `append`:
+
+1. No any `formatting`, just manipulate `Text` value;
+2. The `append` of `Text` values may be quite slow.

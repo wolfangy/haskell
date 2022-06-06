@@ -190,3 +190,25 @@ The issue with only `append`:
 
 1. No any `formatting`, just manipulate `Text` value;
 2. The `append` of `Text` values may be quite slow.
+
+:point_right: The key idea of string formatting is to employ a `builder`, which is a data type responsible for collecting text components incrementally and concatenating them into `Text` value.
+
+:point_right: The formatting text is very close to  `templating`, where you provide a template of the text with some tokens, which are substituted by values are the final stage of processing.
+
+:package: `fmt` package
+
+Example:
+
+```haskell
+> :set -XoverloadedStrings
+> import Fmt
+> name = "John"
+> age = 30
+> fmt $ "Hello, " +|name|+"!\nI know that your age is "+|age|+".\n"
+> fmt $ "That is "+|hexF age|+ " in hex!\n"
+```
+
+:crystal_ball: The operator `+|` and `|+` are used to including variables and formatters (ordinary functions like `hexF` here)
+
+:crystal_ball: Sometimes we need to call `show` for our variable (if the `fmt` package doesn't know how to convert it to textual form).
+

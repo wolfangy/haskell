@@ -215,8 +215,7 @@ Example:
 
 (|+) :: (Buildable a, Fmt.Internal.Core.FromBuilder b) => a -> Builder -> b
 
-class Buildable p where
-    build :: p -> Builder
+class Buildable p where build :: p -> Builder
 ```
 
 :crystal_ball: Sometimes we need to call `show` for our variable (if the `fmt` package doesn't know how to convert it to textual form). This can be done implicitly via the other pair of operators: `+||` and `||+`.
@@ -230,10 +229,12 @@ class Buildable p where
 :crystal_ball: We can always provide a formatter for our data by writing a function returning `Builder`, which is the data type used for efficiently constructing `Text` values.
 
 ```haskell
-
 newtype Builder = 
     Data.Text.Internal.Builder.Builder {
-        Data.Text.Internal.Builder.runBuilder :: forall s. (Data.Text.Internal.Builder.Buffer s -> GHC.ST.ST s [Data.Text.Internal.Text]) -> Data.Text.Internal.Builder.Buffer s -> GHC.ST.ST s [Data.Text.Internal.Text]
+        Data.Text.Internal.Builder.runBuilder :: forall s. 
+        (Data.Text.Internal.Builder.Buffer s -> GHC.ST.ST s [Data.Text.Internal.Text])
+        -> Data.Text.Internal.Builder.Buffer s
+        -> GHC.ST.ST s [Data.Text.Internal.Text]
     }
 
 -- nameF: gives a name to the rest of the output
@@ -254,4 +255,22 @@ unlinesF :: (Foldable f, Buildable a) => f a -> Builder
 -- item: 5
 
 -- blockListF': formats list elements in the given way and presents them line by line
+blockListF' :: Foldable f => Text -> (a -> Builder) -> f a -> Builder
+blockList :: (Foldable f, Buildable a) => f a -> Builder
+
+> pairs = [p | p <- zip [1..5] $ tail [1..5]]
+> pairBuilder (a, b) = "(" +|a|+ ", " +|b|+ ")"
+> fmt $ blockListF' "> " pairBuilder paris
+-- > (1, 2)
+-- > (2, 3)
+-- > (3, 4)
+-- > (4, 5)
+```
+
+### 1.4.4 Rule them all with IO Actions
+
+Note `when` function from `Control.Monad` module: It allows printing the corresponding report if the user request it.
+
+```haskell
+when :: Applicative f => Bool -> f () -> f ()
 ```

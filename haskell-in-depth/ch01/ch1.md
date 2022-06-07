@@ -12,6 +12,8 @@ Chapter covers:
 
 * Efficient processing of text data
 
+----
+
 ## 1.1 Solving problems in GHCi REPL
 
 ### Task

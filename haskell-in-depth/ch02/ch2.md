@@ -90,7 +90,7 @@ class Eq a where
 :point_right: If the value of a type can be checked for equality, we define an instance of the `Eq` type class.
 
 
-:exclamation: GHCi provides two commands to get information about type classes: `:info` and `:doc`
+> :exclamation: GHCi provides two commands to get information about type classes: `:info` and `:doc`
 
 
 Deriving Instances

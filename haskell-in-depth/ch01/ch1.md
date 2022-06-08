@@ -234,9 +234,9 @@ class Buildable p where build :: p -> Builder
 newtype Builder = 
     Data.Text.Internal.Builder.Builder {
         Data.Text.Internal.Builder.runBuilder :: forall s. 
-        (Data.Text.Internal.Builder.Buffer s -> GHC.ST.ST s [Data.Text.Internal.Text])
-        -> Data.Text.Internal.Builder.Buffer s
-        -> GHC.ST.ST s [Data.Text.Internal.Text]
+            (Data.Text.Internal.Builder.Buffer s -> GHC.ST.ST s [Data.Text.Internal.Text])
+            -> Data.Text.Internal.Builder.Buffer s
+            -> GHC.ST.ST s [Data.Text.Internal.Text]
     }
 
 -- nameF: gives a name to the rest of the output

@@ -181,3 +181,54 @@ every = enumFrom minBound
 
 ### 2.1.3 Combining turns with Semigroup and Monoid
 
+#### Semigroup
+
+Defined in __Data.Semigroup__
+
+```haskell
+class Semigroup a where
+    (<>) :: a -> a -> a
+```
+
+#### Monoid
+
+```haskell
+class Semigroup a => Monoid a where
+    mempty :: a
+    mappend :: a -> a -> a
+    mconcat :: [a] -> a
+```
+
+`mempty` so-called `neutral` element, as it is expected to satisfy the _`monoid laws`_:
+
+```haskell
+mempty <> a = a
+a <> mepmty = a
+```
+
+#### :exclamation: __OverloadedStrings__ GHC Extension
+
+```haskell
+> :t "Hello"
+-- "Hello" :: [Char]
+
+> :set -XOverloadedStrings
+> :t "Hello"
+-- "Hello" :: Data.String.IsString p => p
+```
+
+The `IsString` type class defines only one method: `fromString`
+
+```haskell
+class Data.String.IsString a where
+  Data.String.fromString :: String -> a
+```
+
+:mage: The only thing the extension `OverloadedStrings` is responsible for is replacing every __string literal__ in the source code with a call to the `fromString` method on that literal.
+
+:point_right: To disable the `OverloadedStrings` in GHCi:
+
+```haskell
+> :set -XNoOverloadedStrings
+```
+

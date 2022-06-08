@@ -89,12 +89,95 @@ class Eq a where
 
 :point_right: If the value of a type can be checked for equality, we define an instance of the `Eq` type class.
 
-
 > :exclamation: GHCi provides two commands to get information about type classes: `:info` and `:doc`
 
-
-Deriving Instances
+#### Deriving Instances
 
 * We can derive instances automatically.
 
 * We can implement those instance manually.
+
+```haskell
+data Direction = North | East | South | West
+    deriving (Eq, Enum, Bounded, Show)
+
+data Turn = TNone | TLeft | TRight | TAround
+    deriving (Eq, Enum, Bounded, Show)
+
+> fromEnum West
+-- 3
+
+> toEnum 3 :: Direction
+-- West
+```
+
+#### Building Abstractions Upon Abstractions
+
+Class defines two methods with default implementations:
+
+```haskell
+class (Eq a, Enum a, Bounded a) => CyclicEnum a where
+    cpred :: a -> a
+    cpred d
+        | d == minBound = maxBound
+        | otherwise     = pred d
+    
+    csucc :: a -> a
+    csucc d
+        | d == maxBound = minBound
+        | otherwise     = succ d
+```
+
+To allow use of any typeclass in `deriving` class, we need to use __`DeriveAnyClass`__:
+
+```haskell
+{-# LANGUAGE DeriveAnyClass #-}
+
+data Direction = North | East | South | West
+    deriving (Eq, Enum, Bounded, CyclicEnum, Show)
+```
+
+The above code is equivalent to:
+
+```haskell
+data Direction = North | East | South | West
+    deriving (Eq, Enum, Bounded, Show)
+
+instance CyclicEnum Direction
+```
+
+#### Implementing Radar Manipulation Functions
+
+As the `Turn` is a instance of `Enum`, so the list of `Turn` can be shorten:
+
+```haskell
+[TNone, TLeft, TRight, TAround]
+-- equivalent to:
+[TNone..TAround]
+```
+
+As `Turn` data type also is an instance of `Bounded`, so it can be expressed as:
+
+```haskell
+[minBound..maxBound]
+```
+
+This behavior can be generalized to a generic function:
+
+```haskell
+every :: (Enum a, Bounded a) => [a]
+every = enumFrom minBound
+```
+
+> Important list processing functions:
+>
+> ```haskell
+> foldl :: (b -> a -> b) -> b -> [a] -> b
+>
+> scanl :: (b -> a -> b) -> b -> [a] -> [b]
+>
+> zipWith :: (a -> b -> c) -> [a] -> [b] -> [c]
+> ```
+
+### 2.1.3 Combining turns with Semigroup and Monoid
+

@@ -1,4 +1,5 @@
 {-# LANGUAGE StandaloneDeriving #-}
+
 import System.Random
 import System.Random.Stateful (uniformRM, uniformM)
 

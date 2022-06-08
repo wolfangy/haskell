@@ -259,3 +259,62 @@ class Data.String.IsString a where
 
 ### 2.1.4 Printing and reading data with _Show_ and _Read_
 
+#### Standalone Deriving
+
+Change the data type declaration by writing a __standalone deriving clause__:
+
+1. This requires the __StandaloneDeriving__ GHC extension
+
+2. Add the standard alone deriving clause, for example:
+
+```haskell
+deriving instance Read Direction
+deriving instance Read Turn
+```
+
+#### Make custom type work with `fmt`
+
+To use `fmt` with user-defined types, we have to implement `Buildable` type class
+
+```haskell
+class Buildable p where build :: p -> Builder
+
+instance Buildable Direction where
+    build North = "N"
+    build East  = "E"
+    ...
+
+instance Buildable Turn where
+    build TNone = "--"
+    build TLeft = "<-"
+    ...
+
+> fmtLn $ "Final direction: " +|| rotateMany dir turns ||+ ""
+```
+
+The `fmt` function is to print the given value in the context:
+
+```haskell
+fmt :: Fmt.Internal.Core.FromBuilder b => Builder -> b
+
+class Fmt.Internal.Core.FromBuilder a where
+    Fmt.Internal.Core.fromBuilder :: Builder -> a
+```
+
+* The `IO ()` instance of `FromBuilder` prints the given value
+
+* The `Text` instance of `FromBuilder`, so it can be used to return a `Text` value as well.
+
+> __Polymorphic Values__: The values of `C a => a` type are called polymorphic, because they can be used in many forms, depending on the required type.
+> Example:
+> Numeric values polymorphically: `Num a => a`
+> `String` literals become polymorphic: `IsString s => s`
+> Builder: `FromBuilder b => b`
+
+### 2.1.5 Testing functions with `Ord` and `Random`
+
+**Example: tests/radar**
+
+> The test suite is a separate program, it can be run by:
+> `cabal test radar-text`
+

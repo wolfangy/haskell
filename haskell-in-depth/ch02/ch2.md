@@ -206,6 +206,31 @@ mempty <> a = a
 a <> mepmty = a
 ```
 
+`mconcat` function return `mempty` if the given list is empty and applies an operation over all the elements from left to right otherwise.
+
+`sconcat` function is similar but there is __NO neutral__ element in `Semigroup` so it cannot return something meaningful in the case of an empty list.
+
+```haskell
+sconcat :: Semigroup a => NonEmpty a -> a
+
+> import Data.List.NonEmpty
+
+data NonEmpty a = a :| [a]
+
+> xyz = sconcat ("x" :| ["y", "z"])
+-- "xyz"
+```
+
+After `Turn` implement `Semigroup` and `Monoid` type class, the following code are equivalent, and the later one only need to `rotate` once:
+
+```haskell
+rotateMany :: Direction -> [Turn] -> Direction
+rotateMany = foldl (flip rotate) 
+
+rotateMany :: Direction -> [Turn] -> Direction
+rotateMany dir ts = rotate (mconcat ts)
+```
+
 #### :exclamation: __OverloadedStrings__ GHC Extension
 
 ```haskell
@@ -231,4 +256,6 @@ class Data.String.IsString a where
 ```haskell
 > :set -XNoOverloadedStrings
 ```
+
+### 2.1.4 Printing and reading data with _Show_ and _Read_
 

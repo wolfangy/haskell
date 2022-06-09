@@ -318,3 +318,78 @@ class Fmt.Internal.Core.FromBuilder a where
 > The test suite is a separate program, it can be run by:
 > `cabal test radar-text`
 
+#### Order
+
+Order depends on equality:
+
+```haskell
+class Eq a => Ord a where
+    compare :: a -> a -> Ordering
+    (<)  :: a -> a -> Bool
+    (<=) :: a -> a -> Bool
+    ...
+    {-# MINIMAL compare | (<=) #-}
+```
+
+#### Randomness
+
+Several parts of the random-numbers interface are available to Haskell programmer:
+
+* Pure random-number generators
+
+* Stateful random-number generators
+
+* Infrastructure for drawing random values of various types
+
+:package: `random` package gives us:
+
+:abacus: __System.Random__ module - the __`RandomGen`__ type class for describing pure random-number generators.
+
+:abacus: __System.Random.Stateful__ module - the __`StatefulGen`__ type class for describing stateful random-number generators.
+
+:cherries: __`StdGen`__ type: a standard random-number generator, which implements the `RandomGen` type class. _a function that compute a random number from `StdGen` is a pure function._
+
+:cherries: There is also the `global` standard random-number generator available in the `IO` monad.
+
+:abacus: the __`Uniform`__ and __`UniformRange`__ type class for drawing a value from a whole domain or from a restricted range, respectively.
+
+:apple: The simplest way of generating random values of type `a` is to use one of the following `uniform` or `uniformR` function:
+
+```haskell
+uniform :: (RandomGen g, Uniform a) => g -> (a, g)
+
+uniformR :: (RandomGen g, UniformRange a) => (a, a) -> g -> (a, g)
+```
+
+:handshake: the `uniformR` function takes a range in the form of `(lo, hi)` tuple values.
+
+:exclamation: Note the `g` generator given and returned in the code, these functions are pure, so we need the resulting generator for creating the next random numbers.
+
+:question: Where do we get the generator?
+
+:crystal_ball: Option 1 : `IO` monad
+
+```haskell
+-- :earth_asia: The first two `get` and `set` the global random-number generator:
+getStdGen :: IO StdGen
+setStdGen :: StdGen -> IO ()
+
+-- :earth_americas: This one gives us a generator and updates the global one at same time:
+newStdGen :: IO StdGen
+
+-- :earth_africa: This one is perfectly suitable to be used with both `uniform` and `uniformR` functions:
+getStdRandom :: (StdGen -> (a, StdGen)) -> IO a
+
+uniformIO :: Uniform a => IO a
+uniformIO = getStdRandom uniform
+
+uniformRIO :: UniformRange a => (a, a) -> IO a
+uniformRIO range = getStdRandom $ uniformR range
+-- uniformR :: (RandomGen g, UniformRange a) => (a, a) -> g -> (a, g)
+-- uniformR range :: (RandomGen g, UniformRange a) =>     g -> (a, g)
+-- getStdRandom   ::                                (StdGen -> (a, StdGen)) -> IO a
+-- getStdRandom $ uniformR range :: IO a
+```
+
+:dancers: The standard generator is __splittable__, meaning that we can produce two generators from the one we have and use them independently.
+

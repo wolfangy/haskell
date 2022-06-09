@@ -347,13 +347,13 @@ Several parts of the random-numbers interface are available to Haskell programme
 
 * :abacus: __System.Random.Stateful__ module - the __`StatefulGen`__ type class for describing stateful random-number generators.
 
-..* :cherries: __`StdGen`__ type: a standard random-number generator, which implements the `RandomGen` type class. _a function that compute a random number from `StdGen` is a pure function._
+  * :cherries: __`StdGen`__ type: a standard random-number generator, which implements the `RandomGen` type class. _a function that compute a random number from `StdGen` is a pure function._
 
-..* :cherries: There is also the `global` standard random-number generator available in the `IO` monad.
+  * :cherries: There is also the `global` standard random-number generator available in the `IO` monad.
 
-:abacus: the __`Uniform`__ and __`UniformRange`__ type class for drawing a value from a whole domain or from a restricted range, respectively.
+* :abacus: the __`Uniform`__ and __`UniformRange`__ type class for drawing a value from a whole domain or from a restricted range, respectively.
 
-:apple: The simplest way of generating random values of type `a` is to use one of the following `uniform` or `uniformR` function:
+  * :apple: The simplest way of generating random values of type `a` is to use one of the following `uniform` or `uniformR` function:
 
 ```haskell
 uniform :: (RandomGen g, Uniform a) => g -> (a, g)

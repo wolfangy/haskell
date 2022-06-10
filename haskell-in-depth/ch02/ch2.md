@@ -480,10 +480,15 @@ Numeric type classes:
 
 ```mermaid
 graph TD;
-    N(Num) --> R(Real)
+    Eq((Eq)) --> N(Num)
+    S((Show)) --> N
+    Eq --> O((Ord))
+    O --> En((Enum))
+    O --> R(Real)
+    N --> R
     N --> F(Fractional)
     R --> I(Integral)
-    E(Enum) --> I
+    En --> I
     R --> RF(RealFrac)
     F --> RF
     F --> Fl(Floating)

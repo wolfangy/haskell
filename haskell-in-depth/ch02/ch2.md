@@ -480,7 +480,7 @@ Numeric type classes:
 
 ```mermaid
 graph TD;
-    Eq((Eq)) --> N(Num)
+    Eq([Eq]) --> N(Num)
     S((Show)) --> N
     Eq --> O((Ord))
     O --> En((Enum))

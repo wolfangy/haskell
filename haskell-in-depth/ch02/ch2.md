@@ -482,8 +482,9 @@ Numeric type classes:
 graph TD;
     N(Num) --> R(Real)
     N --> F(Fractional)
-    R --> I (Integral)
-    R --> RF (RealFrac)
+    R --> I(Integral)
+    E(Enum) --> I
+    R --> RF(RealFrac)
     F --> RF
     F --> Fl(Floating)
     Fl --> RFl(RealFloat)

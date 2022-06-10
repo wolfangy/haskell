@@ -345,15 +345,41 @@ Several parts of the random-numbers interface are available to Haskell programme
 
 * :abacus: __System.Random__ module - the __`RandomGen`__ type class for describing pure random-number generators.
 
+```haskell
+class RandomGen g where
+    next      :: g -> (Int, g)
+    ...
+    genWord64 :: g -> (Word64, g)
+    ...
+    genRange  :: g -> (Int, Int)
+    split     :: g -> (g, g)
+```
+
 * :abacus: __System.Random.Stateful__ module - the __`StatefulGen`__ type class for describing stateful random-number generators.
 
-  * :cherries: __`StdGen`__ type: a standard random-number generator, which implements the `RandomGen` type class. _a function that compute a random number from `StdGen` is a pure function._
+```haskell
+class Monad m => StatefulGen g m where
+    ...
+    uniformWord32 :: g -> m Word32
+    ...
+    uniformWord64 :: g -> m Word64
+```
 
-  * :cherries: There is also the `global` standard random-number generator available in the `IO` monad.
+* :cherries: __`StdGen`__ type: a standard random-number generator, which implements the `RandomGen` type class. _a function that compute a random number from `StdGen` is a pure function._
 
-* :abacus: the __`Uniform`__ and __`UniformRange`__ type class for drawing a value from a whole domain or from a restricted range, respectively.
+* :cherries: There is also the `global` standard random-number generator available in the `IO` monad.
 
-  * :apple: The simplest way of generating random values of type `a` is to use one of the following `uniform` or `uniformR` function:
+* :abacus: the __`Uniform`__ and __`UniformRange`__ type class for drawing a value from a whole domain or from a re
+
+```haskell
+class Uniform a where
+    uniformM :: StatefulGen g m => g -> m a
+
+class UniformRange a where
+    uniformRM :: StatefulGen g m => (a, a) -> g -> m a
+```
+
+* :apple: The simplest way of generating random values of type `a` is to use one of the following `uniform` or `uniformR` function:
 
 ```haskell
 uniform :: (RandomGen g, Uniform a) => g -> (a, g)
@@ -393,3 +419,73 @@ uniformRIO range = getStdRandom $ uniformR range
 
 :dancers: The standard generator is __splittable__, meaning that we can produce two generators from the one we have and use them independently.
 
+:space_invader: The general scenario of using random numbers:
+
+1. Acquire the random-number generator from operating system using `newStdGenIO`;
+
+2. Use the generator, as long as we keep updating the generator every time we generate a random number.
+
+#### Generating Random Directions and Turns
+
+:exclamation: Note the `M` suffix: defined in `System.Random.Stateful` module and use the monadic interface more generally.
+
+```haskell
+instance UniformRange Turn where
+    uniformRM (lo, hi) rng = do
+        res <- uniformRM (fromEnum lo :: Int, fromEnum hi) rng
+        pure $ toEnum res
+
+instance Uniform Turn where
+    uniformM rng = uniformRM (minBound, maxBound) rng
+```
+
+## 2.2 Issues with numbers and text
+
+
+### 2.2.1 Numeric types and type classes
+
+* `Int` and `Word` for fixed-precision integers
+
+* `Integer` for arbitrary-precision integers
+
+* `Float` and `Double` for floating-point numbers
+
+* Import `Data.Ratio` module, we can use `Ratio a` and `Rational`, as `%` operator for representing fractions:
+
+```haskell
+> 1%4 + 1%4
+> 1%2
+```
+
+* Import `Data.Complex` module, we can get type `Complex a` and use complex numbers
+
+```haskell
+> (0 :+ 1) + (0 :+ (-1))
+> 0.0 :+ 0.0
+```
+
+Numeric type classes:
+
+* Start with the most abstract type class `Num`
+
+* Other type classes include:
+
+  * `Integral` unifying operations for all integer types
+
+  * `Real` for operations over real (non-complex) numbers
+
+  * `Floating` for operations with floating-point numbers (`Float` and `Double`)
+
+  * `Fractional` for everything that can be used with __division__
+
+```mermaid
+graph TD;
+    N(Num) --> R(Real)
+    N --> F(Fractional)
+    R --> I (Integral)
+    R --> RF (RealFrac)
+    F --> RF
+    F --> Fl(Floating)
+    Fl --> RFl(RealFloat)
+    RF --> RFl
+```

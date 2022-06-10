@@ -2,9 +2,11 @@
 
 import System.Random
 import System.Random.Stateful (uniformRM, uniformM)
+import System.Exit(exitFailure)
 
 import Radar
-import Control.Monad (replicateM)
+import Control.Monad (replicateM, when)
+import Data.List(nub, sort)
 
 deriving instance Ord Turn
 
@@ -36,7 +38,30 @@ randomTurns = uniformsIO
 randomDirections :: Int -> IO [Direction]
 randomDirections = uniformsIO
 
-writeRandomFile :: (Random a, Show a) => Int -> (Int -> IO [a]) -> FilePath -> IO ()
+writeRandomFile :: (Uniform a, Show a) => Int -> (Int -> IO [a]) -> FilePath -> IO ()
 writeRandomFile n gen fname = do
     xs <- gen n
     writeFile fname $ unlines $ map show xs
+
+test_allTurnsInUse :: Bool
+test_allTurnsInUse = 
+    sort (nub [ orient d1 d2 | d1 <- every, d2 <- every])
+        == every
+
+test_rotateMonoidAgree :: [Turn] -> Bool
+test_rotateMonoidAgree ts =
+    and [ rotateMany d ts == rotateMany' d ts | d <- every]
+
+test_orientRotateAgree :: [Direction] -> Bool
+test_orientRotateAgree [] = True
+test_orientRotateAgree ds@(d:_) = ds == rotateManySteps d (orientMany ds)
+
+main :: IO ()
+main = do
+    ds <- randomDirections 1000
+    ts <- randomTurns 1000
+    when (not $ and [
+            test_allTurnsInUse,
+            test_rotateMonoidAgree ts,
+            test_orientRotateAgree ds
+        ]) exitFailure

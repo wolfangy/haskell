@@ -343,7 +343,7 @@ Several parts of the random-numbers interface are available to Haskell programme
 
 :package: `random` package gives us:
 
-* :abacus: __System.Random__ module - the __`RandomGen`__ type class for describing pure random-number generators.
+* :abacus: __System.Random__ module - the __`RandomGen`__ type class for describing __pure__ random-number generators.
 
 ```haskell
 class RandomGen g where
@@ -355,7 +355,7 @@ class RandomGen g where
     split     :: g -> (g, g)
 ```
 
-* :abacus: __System.Random.Stateful__ module - the __`StatefulGen`__ type class for describing stateful random-number generators.
+* :abacus: __System.Random.Stateful__ module - the __`StatefulGen`__ type class for describing __monadic__ or stateful random-number generators.
 
 ```haskell
 class Monad m => StatefulGen g m where
@@ -393,7 +393,7 @@ uniformR :: (RandomGen g, UniformRange a) => (a, a) -> g -> (a, g)
 
 :question: Where do we get the generator?
 
-:crystal_ball: Option 1 : `IO` monad
+:crystal_ball: To access the global one kept in `IO` monad
 
 ```haskell
 -- :earth_asia: The first two `get` and `set` the global random-number generator:
@@ -437,6 +437,12 @@ instance UniformRange Turn where
 
 instance Uniform Turn where
     uniformM rng = uniformRM (minBound, maxBound) rng
+```
+
+:exclamation: `nub` function from `Data.List` module removes all duplicates from the given list
+
+```haskell
+nub :: Eq a => [a] -> [a]
 ```
 
 ## 2.2 Issues with numbers and text
@@ -508,7 +514,7 @@ class Num a where
   {-# MINIMAL (+), (*), abs, signum, fromInteger, (negate | (-)) #-}
 
 ----
- 
+
 class (Num a, Ord a) => Real a where
   toRational :: a -> Rational
   {-# MINIMAL toRational #-}
@@ -559,3 +565,44 @@ class Fractional a => Floating a where
   {-# MINIMAL pi, exp, log, sin, cos, asin, acos, atan, sinh, cosh,
               asinh, acosh, atanh #-}
 ```
+
+:bridge_at_night: Convert a `Real` number to a `Fractional`
+
+```haskell
+realToFrac :: (Real a, Fractional b) => a -> b
+```
+
+:bridge_at_night: Treat any integral value as a value of arbitrary numeric type (`Num`):
+
+```haskell
+fromIntegral :: (Integral a, Num b) => a -> b
+
+-- example:
+> xs = [1..5]
+> fromIntegral (sum xs) / fromIntegral (length xs)
+-- 3.0
+```
+
+### 2.2.3 Computing with fixed precision
+
+The `Data.Fixed` module provides the `HasResolution` type class, which has one method: `resolution`
+
+```haskell
+class HasResolution a where
+    resolution :: p a -> Integer
+
+type role Fixed phantom
+type Fixed :: forall k. k -> *
+newtype Fixed a = MkFixed Integer
+
+> data E4
+
+> instance HasResolution E4 where resolution _ = 10000
+
+> type Fixed4 = Fixed E4
+> pi = 3.14 :: Fixed4
+> pi
+-- 3.1400
+```
+
+:heavy_exclamation_mark: `Fixed4` type does not round the value but truncates it instead.

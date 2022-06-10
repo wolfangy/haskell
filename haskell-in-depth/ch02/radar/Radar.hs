@@ -26,13 +26,14 @@ data Turn where
     deriving (Eq, Enum, Bounded, CyclicEnum, Show)
 
 instance Semigroup Turn  where
-    TNone <> t = t
-    TLeft <> TLeft = TAround
-    TLeft <> TRight = TNone
-    TLeft <> TAround = TRight
-    TRight <> TRight = TAround
-    TAround <> TAround = TNone
-    t1 <> t2 = t2 <> t1
+    TNone   <> t        = t
+    TLeft   <> TLeft    = TAround
+    TLeft   <> TRight   = TNone
+    TLeft   <> TAround  = TRight
+    TRight  <> TRight   = TAround
+    TRight  <> TAround  = TLeft
+    TAround <> TAround  = TNone
+    t1      <> t2       = t2 <> t1
 
 instance Monoid Turn where
     mempty = TNone
@@ -53,6 +54,9 @@ orient d1 d2 = head $ filter (\t -> rotate t d1 == d2) every
 
 rotateMany :: Direction -> [Turn] -> Direction
 rotateMany = foldl (flip rotate) 
+
+rotateMany' :: Direction -> [Turn] -> Direction
+rotateMany' dir ts = rotate (mconcat ts) dir
 
 rotateManySteps :: Direction -> [Turn] -> [Direction]
 rotateManySteps = scanl (flip rotate)

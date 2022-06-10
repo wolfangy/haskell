@@ -507,11 +507,25 @@ class Num a where
   fromInteger :: Integer -> a
   {-# MINIMAL (+), (*), abs, signum, fromInteger, (negate | (-)) #-}
 
+----
+ 
 class (Num a, Ord a) => Real a where
   toRational :: a -> Rational
   {-# MINIMAL toRational #-}
 
 type Rational = GHC.Real.Ratio Integer
+
+class (Real a, Enum a) => Integral a where
+  quot :: a -> a -> a
+  rem :: a -> a -> a
+  div :: a -> a -> a
+  mod :: a -> a -> a
+  quotRem :: a -> a -> (a, a)
+  divMod :: a -> a -> (a, a)
+  toInteger :: a -> Integer
+  {-# MINIMAL quotRem, toInteger #-}
+
+----
 
 class Num a => Fractional a where
   (/) :: a -> a -> a

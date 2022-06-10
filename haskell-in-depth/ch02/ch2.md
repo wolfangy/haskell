@@ -486,12 +486,62 @@ graph TD;
     O --> En([Enum])
     O --> R(Real)
     N --> R
-    N --> F(Fractional)
+    N --> Fr(Fractional)
     En --> I(Integral)
     R --> I
-    R --> RF(RealFrac)
-    F --> RF
-    F --> Fl(Floating)
-    RF --> RFl
+    R --> RFr(RealFrac)
+    Fr --> RFr
+    Fr --> Fl(Floating)
+    RFr --> RFl
     Fl --> RFl(RealFloat)
+```
+
+```haskell
+class Num a where
+  (+) :: a -> a -> a
+  (-) :: a -> a -> a
+  (*) :: a -> a -> a
+  negate :: a -> a
+  abs :: a -> a
+  signum :: a -> a
+  fromInteger :: Integer -> a
+  {-# MINIMAL (+), (*), abs, signum, fromInteger, (negate | (-)) #-}
+
+class (Num a, Ord a) => Real a where
+  toRational :: a -> Rational
+  {-# MINIMAL toRational #-}
+
+type Rational = GHC.Real.Ratio Integer
+
+class Num a => Fractional a where
+  (/) :: a -> a -> a
+  recip :: a -> a
+  fromRational :: Rational -> a
+  {-# MINIMAL fromRational, (recip | (/)) #-}
+
+class Fractional a => Floating a where
+  pi :: a
+  exp :: a -> a
+  log :: a -> a
+  sqrt :: a -> a
+  (**) :: a -> a -> a
+  logBase :: a -> a -> a
+  sin :: a -> a
+  cos :: a -> a
+  tan :: a -> a
+  asin :: a -> a
+  acos :: a -> a
+  atan :: a -> a
+  sinh :: a -> a
+  cosh :: a -> a
+  tanh :: a -> a
+  asinh :: a -> a
+  acosh :: a -> a
+  atanh :: a -> a
+  GHC.Float.log1p :: a -> a
+  GHC.Float.expm1 :: a -> a
+  GHC.Float.log1pexp :: a -> a
+  GHC.Float.log1mexp :: a -> a
+  {-# MINIMAL pi, exp, log, sin, cos, asin, acos, atan, sinh, cosh,
+              asinh, acosh, atanh #-}
 ```

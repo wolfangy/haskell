@@ -489,9 +489,9 @@ graph TD;
     N --> F(Fractional)
     En --> I(Integral)
     R --> I
-    R --> RF(RealFrac)
-    F --> RF
+    F --> RF(RealFrac)
+    R --> RF
     F --> Fl(Floating)
-    Fl --> RFl(RealFloat)
     RF --> RFl
+    Fl --> RFl(RealFloat)
 ```

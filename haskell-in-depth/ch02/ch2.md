@@ -490,8 +490,8 @@ graph TD;
     En --> I(Integral)
     R --> I
     R --> RF(RealFrac)
-    F --> RF
     F --> Fl(Floating)
+    F --> RF
     Fl --> RFl(RealFloat)
     RF --> RFl
 ```

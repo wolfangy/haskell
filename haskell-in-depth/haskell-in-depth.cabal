@@ -37,6 +37,19 @@ library radar-lib
         base ^>=4.15
     default-language: Haskell2010
 
+library person-lib
+    exposed-modules: Person
+    hs-source-dirs:  ch02/person
+    ghc-options:
+        -Wall
+        -Wincomplete-uni-patterns
+    default-extensions:
+        GADTs,
+        OverloadedStrings
+    build-depends:
+        base ^>=4.15
+    default-language: Haskell2010
+
 executable vocab1
     hs-source-dirs:   ch01
     main-is:          vocab1.hs

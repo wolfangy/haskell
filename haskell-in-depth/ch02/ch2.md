@@ -606,3 +606,38 @@ newtype Fixed a = MkFixed Integer
 ```
 
 :heavy_exclamation_mark: `Fixed4` type does not round the value but truncates it instead.
+
+### 2.2.4 More about `Show` and `Read`
+
+:point_right: `Show` to return a value into a `String`
+
+:point_right: `Read` to recreate a value from a `String`
+
+```haskell
+show :: Show a => a -> String
+
+read :: Read a => String -> a
+```
+
+#### Show/Read Compatibility
+
+The `String` we got from `show` can be `read` to the same value.
+
+This compatibility holds for every standard type.
+
+#### Alternatives for the `Read`
+
+The `Read` is almost impossible to use it safely.
+
+```haskell
+readMaybe :: Read a => String -> Maybe a
+
+readEither :: Read a => String -> Either String a
+```
+
+> :mage: Printing values in GHCi
+> For every value in GHCi, it implicitly add `print`:
+>
+> ```haskell
+> print :: Show a => a -> IO ()
+> ```

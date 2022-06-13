@@ -704,7 +704,7 @@ showbParen :: Bool -> Builder -> Builder
 
 ## 2.3 Abstracting computations with type classes
 
-1; __`Computational context`__: For computing the value of some type in a context, so that computation can be accompanied by some effects:
+1. __`Computational context`__: For computing the value of some type in a context, so that computation can be accompanied by some effects:
 
 ```mermaid
 graph TD;
@@ -712,7 +712,7 @@ graph TD;
     A --> M(Monad)
 ```
 
-2; __`Iteration`__: For repeated computations over some structure, potentially collecting the result in a context
+2. __`Iteration`__: For repeated computations over some structure, potentially collecting the result in a context
 
 ``` mermaid
 graph TD;

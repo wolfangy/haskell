@@ -718,3 +718,123 @@ graph TD;
 graph TD;
     F(Foldable) --> T(Traversable)
 ```
+
+### 2.3.1 Compuational context and a common behavior
+
+:bulb: `Computational context` means these interrelated conditions occur during the process of compuation.
+
+* :space_invader: Having side effects : `IO`
+
+* :superhero: Mutable variable: `State` and `ST`
+
+* :vampire: Potential absence of an result or failure: `Maybe` and `Either`
+
+* :bank: The possibility of storing some additional info along with the computation: `Writer`
+
+:mage: All these contexts share abstract behavior by: `map`, `apply` and `sequence` over them:
+
+* :loop: `Functor` abstract `mapping` over some value in a computational context.
+
+```haskell
+fmap :: Functor f => (a -> b) -> f a -> f b
+```
+
+* :inbox_tray: `Applicative` enables `injecting` values into a context and `applying` a function in a context to a value in context.
+
+```haskell
+pure :: Applicative f => a -> f a
+
+(<*>) :: Applicative f => f (a -> b) -> f a -> f b
+```
+
+* :railway_track: `Monad` allows `sequencing` computations in a context so that what is done in the next computation depends on the result of the previous one.
+
+```haskell
+(>>=) :: Monad m => m a -> (a -> m b) -> m b
+```
+
+### 2.3.2 Exploring different contexts in parallel
+
+Focus on three context:
+
+1. `IO`
+
+2. `Writer`
+
+3. `[]`
+
+:inbox_tray: Value In a Context:
+
+1. `getLine :: IO String`
+
+2. `writer (42, "step 1\n") :: Writer String`
+
+3. `[1, 2, 3] :: [Int]`
+
+:world_map: Mapping
+
+1. `fmap (++"!") getLine`
+
+2. `fmap (+1) (writer(42, "step 2\n"))`
+
+3. `fmap (+1) [1, 2, 3]`
+
+:weight_lifting: Applying
+
+1. `pure (++) <*> getLine <*> getLine`
+
+2. `pure (+) <*> writer (42, "step 1\n") <*> writer (10, "step 2\n")`
+
+3. `pure (+) <*> [1..3] <*> [4..6]`
+
+:train: Sequencing
+
+1. `getLine >>= putStrLn`
+
+2. `writer (42, "step 1\n") >>= (\a -> writer (a + 1, "step 2\n"))`
+
+3. `[1, 2, 3] >>= (\x -> [x + 1, x, x - 1])`
+
+### 2.3.3 The `do` notation
+
+The `do` notation is a convenient syntactic mechanism for expressing monadic computations:
+
+* `Sequencing` of operations by writing them one after another
+
+* `Binding` values in a context to names with `<-`
+
+* Constructing succeeding operations with the names bound previously.
+
+The `do` notation is desugared into:
+
+```haskell
+(>>=) :: Monad m => m a -> (a -> m b) -> m b
+
+(>>)  :: Monad m => m a -> m b -> m b
+```
+
+### 2.3.4 Folding and Traversing
+
+Both of them should iterate over the container with element of type `a`:
+ `t a`; process every element; and combine all the results. 
+
+```haskell
+class Foldable (t :: * -> *) where
+    foldMap :: Monoid m => (a -> m) -> t a -> m
+    foldr   :: (a -> b -> b) -> b -> t a -> b
+    ...
+```
+
+```haskell
+class (Functor t, Foldable t) => Traversable (t :: * -> *) where
+    traverse  :: Applicative f => (a -> f b) -> t a -> f (t b)
+    sequenceA :: Applicative f => t (f a) -> f (t a)
+    mapM      :: Monad m => (a -> m b) -> t a -> m (t b)
+    sequence  :: Monad m => t (m a) -> m (t a)
+```
+
+The module `Data.Fodable` provides `travers_`, a function similar to `traverse`, that does not collect result of the individual computation:
+
+```haskell
+traverse :: (Applicative f, Foldable t) => (a -> f b) -> t a -> f ()
+```

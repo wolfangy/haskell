@@ -708,6 +708,6 @@ __`Computational context`__: For computing the value of some type in a context, 
 
 ```mermaid
 graph TD;
-    F([Functor]) --> A([Applicative])
-    A --> M([Monad])
+    F(Functor) --> A(Applicative)
+    A --> M(Monad)
 ```

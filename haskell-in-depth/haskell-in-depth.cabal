@@ -126,6 +126,12 @@ executable person
 executable stock
     hs-source-dirs:  ch03
     main-is:         Main.hs
+    other-modules:
+        Params
+        QuoteData
+        StatReport
+        Charts
+        HtmlReport
     build-depends:
         base ^>=4.15,
         text-show

@@ -1,1 +1,1 @@
-moduel HtmlReport where
+module HtmlReport where

@@ -1,4 +1,4 @@
 module Main where
 
 main :: IO ()
-main = undefined
+main = putStrLn "Stock quotes processing project"

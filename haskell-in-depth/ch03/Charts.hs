@@ -1,1 +1,1 @@
-module Chars where
+module Charts where

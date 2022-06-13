@@ -47,3 +47,41 @@ graph TD;
     HReport --> Data
     Main --> Params([Params])
 ```
+
+## 3.2 Exploring design space
+
+### :red_circle: Designing the user interface
+
+* Mandatory arguments are `positional` (User had to specify them in positions)
+
+* Program behavior can be tweaked with a set of options or flags beginning with a dash in any position.
+
+```bash
+# Usage: stock FILE [-n|--name Arg] [-c\--char] [--html FILE] [-s|--silent]
+```
+
+:tired_face: Manual Parsing Option: `getArgs` to traverse a list of command-line arguments and filling some `Map` or associate list
+
+:smile: Haskell Libraries:
+
+:package: `optparse-applicative` :white_check_mark:
+
+:package: `cmdargs`
+
+:exclamation: These haskell libs for dealing with command-line args are extremely powerful.
+
+### :orange_circle: Dealing with Input Data
+
+#### :moon: Dates and Times
+
+:package: `time` package from Haskell is sophisticated enough to deal with all date related technicalities.
+
+* `Day` type represents a date in the Gregorian calendar
+* Different types for times and duration can be imported from `Data.Time` module of this package
+* Other functions:
+  * Constructing dates and time form integers
+  * Parsing dates and times from strings
+  * Formatting dates and times into strings
+  * Getting the current date and time
+  * manipulating dates and times
+

@@ -19,6 +19,6 @@ graph TD;
     Data --> Chart(SVG file)
     Data --> Report(Full report HTML)
     Data --> Info(Statistical Information)
-    Char --> Report
+    Chart --> Report
     Info --> Report
 ```

@@ -37,13 +37,13 @@ What we should do in this project:
 
 ```mermaid
 graph TD;
-    Main((Main)) --> Data((QuoteData))
-    Main --> Chars((Charts))
-    Main --> SReport((StatReport))
-    Main --> HReport((HtmlReport))
-    Main --> Params((Params))
+    Main([Main]) --> Data([QuoteData])
+    Main --> Chars([Charts])
+    Main --> SReport([StatReport])
+    Main --> HReport([HtmlReport])
+    Main --> Params([Params])
     Chars --> Data
     SReport --> Data
     HReport --> SReport
-    HRport --> Data
+    HReport --> Data
 ```

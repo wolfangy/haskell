@@ -16,9 +16,9 @@ Chapter covers:
 ```mermaid
 graph TD;
     Input(CSV file) --> Data(Data collection in memory)
-    Data --> Chart(SVG file)
+    Data --> Chart(Chart - SVG file)
     Data --> Info(Statistical Information)
-    Chart --> Report(Full report HTML)
+    Chart --> Report(Full report - HTML)
     Data --> Report
     Info --> Report
 ```

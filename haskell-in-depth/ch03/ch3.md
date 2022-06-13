@@ -22,3 +22,28 @@ graph TD;
     Data --> Report
     Info --> Report
 ```
+
+What we should do in this project:
+
+* Process command-line arguments
+
+* Read quote data from a CSV file
+
+* Compute statistics
+
+* Plot charts
+
+* Prepare reports on statistical info in text and HTML
+
+```mermaid
+graph TD;
+    Main((Main)) --> Data((QuoteData))
+    Main --> Chars((Charts))
+    Main --> SReport((StatReport))
+    Main --> HReport((HtmlReport))
+    Main --> Params((Params))
+    Chars --> Data
+    SReport --> Data
+    HReport --> SReport
+    HRport --> Data
+```

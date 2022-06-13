@@ -41,9 +41,9 @@ graph TD;
     Main --> Chars([Charts])
     Main --> SReport([StatReport])
     Main --> HReport([HtmlReport])
-    Main --> Params([Params])
     Chars --> Data
     SReport --> Data
     HReport --> SReport
     HReport --> Data
+    Main --> Params([Params])
 ```

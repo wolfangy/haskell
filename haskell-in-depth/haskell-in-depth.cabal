@@ -37,17 +37,17 @@ library radar-lib
         base ^>=4.15
     default-language: Haskell2010
 
-library person-lib
-    exposed-modules: Person
-    hs-source-dirs:  ch02/person
+library expr-lib
+    exposed-modules: Expr
+    hs-source-dirs: ch02/expr
     ghc-options:
         -Wall
         -Wincomplete-uni-patterns
     default-extensions:
-        GADTs,
-        OverloadedStrings
+        GADTs
     build-depends:
-        base ^>=4.15
+        base ^>=4.15,
+        text-show
     default-language: Haskell2010
 
 executable vocab1
@@ -107,6 +107,20 @@ executable radar
         GADTs,
         DeriveAnyClass,
         StandaloneDeriving
+    default-language: Haskell2010
+
+executable person
+    hs-source-dirs:  ch02/person
+    main-is:         Person.hs
+    build-depends:
+        base ^>=4.15,
+        text-show
+    ghc-options:
+        -Wall
+        -Wincomplete-uni-patterns
+    default-extensions:
+        GADTs,
+        OverloadedStrings
     default-language: Haskell2010
 
 test-suite radar-test

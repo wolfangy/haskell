@@ -641,3 +641,73 @@ readEither :: Read a => String -> Either String a
 > ```haskell
 > print :: Show a => a -> IO ()
 > ```
+
+:exploding_head: Issues with implementing `Show` and `Read`:
+
+:bomb: Constructing a `String` by concatenation is highly inefficient.
+
+:bomb: Recursive data types introduce the problem of parentheses: when and how should they be inserted into the `String` under construction.
+
+:bomb: Implementing `Read` instance to maintain the compatibility with manually impelemented `Show` hard.
+
+:bulb: Best advice on `Show` and `Read` is to avoid implementing them manually.
+
+#### The TextShow Type Class
+
+The `text-show` package provides an alternative for the `Show` type class.
+The `TextShow` type class implements a similar functionality by building `Text` instead of `String`.
+
+```haskell
+class TextShow a where
+    showbPrec :: Int -> a -> Builder
+    showb :: a -> Builder
+    ...
+{-# MINIMAL showbPrec | showb #-}
+
+fromString :: String -> Builder
+```
+
+:four_leaf_clover: The `Builder` collects inside itself all the components with the `(<>)` operation without constructing a resulting value ==> efficient.
+
+:information_desk_person: once we are done adding components, we can request a result with:
+
+* `toString`
+
+* `toText`
+
+* print it with `printT`
+
+
+### 2.2.5 Converting recursive types to strings
+
+:twisted_rightwards_arrows: To improve the inefficiency of `String` concatenation with `Show`, designer come up with different technique:
+__Difference Lists__:
+To replace explicit `String` concatenation by `++` with composition of functions.
+:point_right: Every such function appends somethings to its argument, thus producing a new `String` when required.
+:point_right: The `base` libary provides the `ShowS` type for these functions.
+
+:sunflower: To deal with precedence, the `TextShow` type class defines:
+
+```haskell
+showbPrec :: TextShow a => Int -> a -> Builder
+```
+
+:exclamation: The __first__ argument is an integer number from 0 to 11, which corresponds to the precedence fo the `outer` context.
+
+:exclamation: The function `showb :: TextShow a => a -> Builder` ignores precedence, its default implementation call `showPrec` with precedence `0`.
+
+We also need another utility function to add parentheses:
+
+```haskell
+showbParen :: Bool -> Builder -> Builder
+```
+
+## 2.3 Abstracting computations with type classes
+
+__`Computational context`__: For computing the value of some type in a context, so that computation can be accompanied by some effects:
+
+```mermaid
+graph TD;
+    F([Functor]) --> A ([Applicative])
+    A --> M([Monad])
+```

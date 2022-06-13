@@ -123,6 +123,20 @@ executable person
         OverloadedStrings
     default-language: Haskell2010
 
+executable stock
+    hs-source-dirs:  ch03
+    main-is:         Main.hs
+    build-depends:
+        base ^>=4.15,
+        text-show
+    ghc-options:
+        -Wall
+        -Wincomplete-uni-patterns
+    default-extensions:
+        GADTs,
+        OverloadedStrings
+    default-language: Haskell2010
+
 test-suite radar-test
     type: exitcode-stdio-1.0
     main-is: Test.hs

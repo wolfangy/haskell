@@ -17,8 +17,8 @@ Chapter covers:
 graph TD;
     Input(CSV file) --> Data(Data collection in memory)
     Data --> Chart(SVG file)
-    Data --> Report(Full report HTML)
     Data --> Info(Statistical Information)
-    Chart --> Report
+    Chart --> Report(Full report HTML)
+    Data --> Report
     Info --> Report
 ```

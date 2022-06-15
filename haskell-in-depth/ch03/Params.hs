@@ -1,4 +1,4 @@
 module Params where
 
-work :: Params -> IO ()
+-- work :: Params -> IO ()
 work = undefined

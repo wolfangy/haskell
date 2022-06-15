@@ -134,13 +134,23 @@ executable stock
         HtmlReport
     build-depends:
         base ^>=4.15,
-        text-show
+        text,
+        bytestring,
+        time,
+        fmt,
+        colonnade,
+        blaze-html,
+        blaze-colonnade,
+        Chart,
+        Chart-diagrams ^>=1.9.3,
+        cassava,
+        optparse-applicative
     ghc-options:
         -Wall
         -Wincomplete-uni-patterns
-    default-extensions:
-        GADTs,
-        OverloadedStrings
+    -- default-extensions:
+    --     GADTs,
+    --     OverloadedStrings
     default-language: Haskell2010
 
 test-suite radar-test

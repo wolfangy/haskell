@@ -85,3 +85,26 @@ graph TD;
   * Getting the current date and time
   * manipulating dates and times
 
+:yellow_circle: Parsing CSV Files
+
+Option :one: To read the CSV, we could just use basic `Text` processing facilities as: `lines`, `splitOn` and `read` functions.
+
+Hard part for manual processing: error processing
+
+1. Naive implementation: :skull: _garbage in, garbage out_: any errors would result in an exception.
+
+2. Deal with error: :superhero_man:
+   * Ignore incorrect line or report them to user;
+   * Interpolate missing values somehow using neighboring values;
+   * Stop reading the file after encountering an error.
+
+Option :two: To use some powerful libraries like `parsec`.
+
+Option :three: To use some external package specifically for parsing CSV, like `cassava`:
+
+* Implementing instances of the `FromField` type class;
+* Work with `Vector` from `Data.Vector` module from `vector` package.
+
+### :large_blue_circle: Formatting reports:
+
+### :green_circle: Plotting charts:

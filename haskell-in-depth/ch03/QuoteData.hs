@@ -1,5 +1,6 @@
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE DeriveAnyClass #-}
+{-# LANGUAGE RecordWildCards #-}
 
 module QuoteData where
 
@@ -30,3 +31,15 @@ field2fun Close = close
 field2fun High  = high
 field2fun Low   = low
 field2fun Volume = fromIntegral . volume
+
+isRising :: QuoteData -> Bool
+isRising QuoteData {..} = close > open
+
+zeroQD :: Day -> QuoteData
+zeroQD day = let
+                close = 0
+                open = 0
+                high = 0
+                low = 0
+                volume = 0
+            in QuoteData {..}

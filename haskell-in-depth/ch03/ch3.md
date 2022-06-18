@@ -108,3 +108,163 @@ Option :three: To use some external package specifically for parsing CSV, like `
 ### :large_blue_circle: Formatting reports:
 
 ### :green_circle: Plotting charts:
+
+```haskell
+renderableToFile ::
+  FileOptions -> FilePath -> Renderable a -> IO (PickFn a)
+        -- Defined in ‘Graphics.Rendering.Chart.Backend.Diagrams’
+
+type FileOptions :: *
+data FileOptions
+  = FileOptions {_fo_size :: (Double, Double),
+                 _fo_format :: FileFormat,
+                 _fo_fonts :: IO (FontSelector Double)}
+        -- Defined in ‘Graphics.Rendering.Chart.Backend.Diagrams’
+
+type ToRenderable :: * -> Constraint
+class ToRenderable a where
+  toRenderable :: a -> Renderable ()
+  {-# MINIMAL toRenderable #-}
+
+type Renderable :: * -> *
+data Renderable a
+  = Renderable {minsize :: BackendProgram RectSize,
+                render :: RectSize -> BackendProgram (PickFn a)}
+        -- Defined in ‘Graphics.Rendering.Chart.Renderable’
+
+type PickFn :: * -> *
+type PickFn a = Point -> Maybe a
+        -- Defined in ‘Graphics.Rendering.Chart.Renderable’
+
+type Layout :: * -> * -> *
+data Layout x y
+  = Layout {_layout_background :: FillStyle,
+            _layout_plot_background :: Maybe FillStyle,
+            _layout_title :: String,
+            _layout_title_style :: FontStyle,
+            _layout_x_axis :: LayoutAxis x,
+            _layout_top_axis_visibility :: AxisVisibility,
+            _layout_bottom_axis_visibility :: AxisVisibility,
+            _layout_y_axis :: LayoutAxis y,
+            _layout_left_axis_visibility :: AxisVisibility,
+            _layout_right_axis_visibility :: AxisVisibility,
+            _layout_plots :: [Plot x y],
+            _layout_legend :: Maybe LegendStyle,
+            _layout_margin :: Double,
+            _layout_grid_last :: Bool}
+        -- Defined in ‘Graphics.Rendering.Chart.Layout’
+
+type StackedLayout :: * -> *
+data StackedLayout x
+  = forall y. Ord y => StackedLayout (Layout x y)
+  | forall yl yr.
+    (Ord yl, Ord yr) =>
+    StackedLayoutLR (LayoutLR x yl yr)
+
+type StackedLayouts :: * -> *
+data StackedLayouts x
+  = StackedLayouts {_slayouts_layouts :: [StackedLayout x],
+                    _slayouts_compress_legend :: Bool}
+        -- Defined in ‘Graphics.Rendering.Chart.Layout’
+
+type Candle :: * -> * -> *
+data Candle x y
+  = Candle {candle_x :: x,
+            candle_low :: y,
+            candle_open :: y,
+            candle_mid :: y,
+            candle_close :: y,
+            candle_high :: y}
+        -- Defined in ‘Graphics.Rendering.Chart.Plot.Candle’
+
+type ToPlot :: (* -> * -> *) -> Constraint
+class ToPlot a where
+  toPlot :: a x y -> Plot x y
+
+type Plot :: * -> * -> *
+data Plot x y
+  = Plot {_plot_render :: PointMapFn x y -> BackendProgram (),
+          _plot_legend :: [(String, Rect -> BackendProgram ())],
+          _plot_all_points :: ([x], [y])}
+        -- Defined in ‘Graphics.Rendering.Chart.Plot.Types’
+
+bars :: (PlotValue x, BarsPlotValue y) =>
+    [String] -> [(x, [y])] -> EC l (PlotBars x y)
+        -- Defined in ‘Graphics.Rendering.Chart.Easy’
+
+type EC l a =
+  Control.Monad.Trans.State.Lazy.StateT l
+    (Control.Monad.Trans.State.Lazy.State CState) a
+        -- Defined in ‘Graphics.Rendering.Chart.State’
+
+
+type PlotCandle :: * -> * -> *
+data PlotCandle x y
+  = PlotCandle {_plot_candle_title :: String,
+                _plot_candle_line_style :: LineStyle,
+                _plot_candle_fill :: Bool,
+                _plot_candle_rise_fill_style :: FillStyle,
+                _plot_candle_fall_fill_style :: FillStyle,
+                _plot_candle_tick_length :: Double,
+                _plot_candle_width :: Double,
+                _plot_candle_centre :: Double,
+                _plot_candle_values :: [Candle x y]}
+        -- Defined in ‘Graphics.Rendering.Chart.Plot.Candle’
+instance Default (PlotCandle x y)
+  -- Defined in ‘Graphics.Rendering.Chart.Plot.Candle’
+instance ToPlot PlotCandle
+  -- Defined in ‘Graphics.Rendering.Chart.Plot.Candle’
+
+
+type PlotLines :: * -> * -> *
+data PlotLines x y
+  = PlotLines {_plot_lines_title :: String,
+               _plot_lines_style :: LineStyle,
+               _plot_lines_values :: [[(x, y)]],
+               _plot_lines_limit_values :: [[(Limit x, Limit y)]]}
+        -- Defined in ‘Graphics.Rendering.Chart.Plot.Lines’
+instance Default (PlotLines x y)
+  -- Defined in ‘Graphics.Rendering.Chart.Plot.Lines’
+instance ToPlot PlotLines
+  -- Defined in ‘Graphics.Rendering.Chart.Plot.Lines’
+
+
+type PlotBars :: * -> * -> *
+data PlotBars x y
+  = PlotBars {_plot_bars_style :: PlotBarsStyle,
+              _plot_bars_item_styles :: [(FillStyle, Maybe LineStyle)],
+              _plot_bars_titles :: [String],
+              _plot_bars_spacing :: PlotBarsSpacing,
+              _plot_bars_alignment :: PlotBarsAlignment,
+              _plot_bars_reference :: y,
+              _plot_bars_singleton_width :: Double,
+              _plot_bars_values :: [(x, [y])]}
+        -- Defined in ‘Graphics.Rendering.Chart.Plot.Bars’
+instance BarsPlotValue y => Default (PlotBars x y)
+  -- Defined in ‘Graphics.Rendering.Chart.Plot.Bars’
+
+
+type LineStyle :: *
+data LineStyle
+  = LineStyle {_line_width :: Double,
+               _line_color :: AlphaColour Double,
+               _line_dashes :: [Double],
+               _line_cap :: LineCap,
+               _line_join :: LineJoin}
+        -- Defined in ‘Graphics.Rendering.Chart.Backend.Types’
+instance Eq LineStyle
+  -- Defined in ‘Graphics.Rendering.Chart.Backend.Types’
+instance Show LineStyle
+  -- Defined in ‘Graphics.Rendering.Chart.Backend.Types’
+instance Default LineStyle
+  -- Defined in ‘Graphics.Rendering.Chart.Backend.Types’
+
+
+type Default :: * -> Constraint
+class Default a where
+  def :: a
+  default def :: (GHC.Generics.Generic a,
+                  Data.Default.Class.GDefault (GHC.Generics.Rep a)) =>
+                 a
+        -- Defined in ‘data-default-class-0.1.2.0:Data.Default.Class’
+```

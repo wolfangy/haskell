@@ -135,6 +135,7 @@ executable stock
     build-depends:
         base ^>=4.15,
         text,
+        mtl,
         bytestring,
         time,
         fmt,

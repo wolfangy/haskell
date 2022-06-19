@@ -107,6 +107,35 @@ Option :three: To use some external package specifically for parsing CSV, like `
 
 ### :large_blue_circle: Formatting reports:
 
+```haskell
+minimumBy :: Foldable t => (a -> a -> Ordering) -> t a -> a
+maximumBy :: Foldable t => (a -> a -> Ordering) -> t a -> a
+        -- Defined in ‘Data.Foldable’
+
+fixedF :: Real a => Int -> a -> Builder
+        -- Defined in ‘Fmt.Internal.Numeric’
+
+ascii :: Foldable f => Colonnade Headed a String -> f a -> String
+        -- Defined in ‘Colonnade’
+
+pretty :: (Buildable a, Fmt.Internal.Core.FromBuilder b) => a -> b
+        -- Defined in ‘Fmt.Internal.Core’
+
+headed :: c -> (a -> c) -> Colonnade Headed a c
+        -- Defined in ‘Colonnade’
+
+type Colonnade :: (* -> *) -> * -> * -> *
+newtype Colonnade h a c
+  = Colonnade.Encode.Colonnade {
+      Colonnade.Encode.getColonnade :: Data.Vector.Vector (
+          Colonnade.Encode.OneColonnade h a c)
+    }
+
+type Headed :: * -> *
+newtype Headed a = Headed {getHeaded :: a}
+        -- Defined in ‘Colonnade.Encode’
+```
+
 ### :green_circle: Plotting charts:
 
 ```haskell
@@ -136,6 +165,12 @@ type PickFn :: * -> *
 type PickFn a = Point -> Maybe a
         -- Defined in ‘Graphics.Rendering.Chart.Renderable’
 
+type StackedLayouts :: * -> *
+data StackedLayouts x
+  = StackedLayouts {_slayouts_layouts :: [StackedLayout x],
+                    _slayouts_compress_legend :: Bool}
+        -- Defined in ‘Graphics.Rendering.Chart.Layout’
+
 type Layout :: * -> * -> *
 data Layout x y
   = Layout {_layout_background :: FillStyle,
@@ -161,11 +196,6 @@ data StackedLayout x
     (Ord yl, Ord yr) =>
     StackedLayoutLR (LayoutLR x yl yr)
 
-type StackedLayouts :: * -> *
-data StackedLayouts x
-  = StackedLayouts {_slayouts_layouts :: [StackedLayout x],
-                    _slayouts_compress_legend :: Bool}
-        -- Defined in ‘Graphics.Rendering.Chart.Layout’
 
 type Candle :: * -> * -> *
 data Candle x y

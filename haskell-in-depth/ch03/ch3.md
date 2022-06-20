@@ -115,11 +115,11 @@ maximumBy :: Foldable t => (a -> a -> Ordering) -> t a -> a
 fixedF :: Real a => Int -> a -> Builder
         -- Defined in ‘Fmt.Internal.Numeric’
 
-ascii :: Foldable f => Colonnade Headed a String -> f a -> String
-        -- Defined in ‘Colonnade’
-
 pretty :: (Buildable a, Fmt.Internal.Core.FromBuilder b) => a -> b
         -- Defined in ‘Fmt.Internal.Core’
+
+ascii :: Foldable f => Colonnade Headed a String -> f a -> String
+        -- Defined in ‘Colonnade’
 
 headed :: c -> (a -> c) -> Colonnade Headed a c
         -- Defined in ‘Colonnade’

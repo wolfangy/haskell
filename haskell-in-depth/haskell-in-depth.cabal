@@ -154,6 +154,25 @@ executable stock
     --     OverloadedStrings
     default-language: Haskell2010
 
+executable genSql
+  main-is: genSql.hs
+  hs-source-dirs:
+      ch05
+  ghc-options:
+    -- -Wall
+    -Werror
+    -Wcompat
+    -Widentities
+    -Wincomplete-uni-patterns
+    -Wincomplete-record-updates
+    -Wno-unused-top-binds
+    -Wno-orphans
+  build-depends:
+      base ^>=4.15
+    , text
+    , mtl
+  default-language: Haskell2010
+
 executable evalrpn1
   main-is: evalrpn1.hs
   other-modules:
@@ -167,6 +186,60 @@ executable evalrpn1
     , mtl
   default-language: Haskell2010
 
+executable evalrpn2
+  main-is: evalrpn2.hs
+  other-modules:
+      EvalRPNTrans
+  hs-source-dirs:
+      ch06/rpn
+  ghc-options:
+   -Wall -Werror -Wcompat -Widentities -Wincomplete-uni-patterns -Wincomplete-record-updates -Wno-unused-top-binds -Wno-orphans
+  build-depends:
+      base ^>=4.15
+    , mtl
+  default-language: Haskell2010
+
+executable du
+  main-is: Main.hs
+  other-modules:
+      App
+    --   AppRTWTST
+      AppRWST
+      AppTypes
+      DirTree
+    --   DiskUsage
+      FileCounter
+      Utils
+    --   Paths_hid_examples
+  hs-source-dirs:
+      ch06/du
+  default-extensions:
+      RecordWildCards
+      NamedFieldPuns
+      OverloadedStrings
+  other-extensions:
+      GeneralizedNewtypeDeriving
+  ghc-options:
+    -Wall
+    -Werror
+    -Wcompat
+    -Widentities
+    -Wincomplete-uni-patterns
+    -Wincomplete-record-updates
+    -Wno-unused-top-binds
+    -Wno-orphans
+  build-depends:
+      base ^>=4.15
+    , directory
+    , extra
+    , filepath
+    , mtl
+    , optparse-applicative
+    , text
+    , text-show
+    , unix-compat
+  default-language: Haskell2010
+
 test-suite radar-test
     type: exitcode-stdio-1.0
     main-is: Test.hs
@@ -175,4 +248,4 @@ test-suite radar-test
         base ^>=4.15,
         radar-lib,
         random
-    default-language: Haskell2010
+    default-language: Haskell2010 

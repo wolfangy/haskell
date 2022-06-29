@@ -17,6 +17,9 @@ data ErrorMsg = WrongFormat Int Text
 genSQL :: Text -> Writer [ErrorMsg] SQL
 genSQL txt = T.concat <$> traverse processLine (zip [1..] $ T.lines txt)
 
+-- :t traverse processLine (zip [1..] $ T.lines txt)
+-- Writer [ErrorMsg] [SQL]
+
 processLine :: (Int, Text) -> Writer [ErrorMsg] SQL
 processLine (i, T.splitOn ":" -> [s1, s2]) = pure $ genInsert i s1 s2
 processLine (i, s) = tell [WrongFormat i s] >> pure ""

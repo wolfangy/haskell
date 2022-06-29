@@ -173,6 +173,25 @@ executable genSql
     , mtl
   default-language: Haskell2010
 
+executable weapons
+  main-is: weapons.hs
+  hs-source-dirs:
+      ch05
+  ghc-options:
+    -- -Wall
+    -Werror
+    -Wcompat
+    -Widentities
+    -Wincomplete-uni-patterns
+    -Wincomplete-record-updates
+    -Wno-unused-top-binds
+    -Wno-orphans
+  build-depends:
+      base ^>=4.15
+    , random
+    , mtl
+  default-language: Haskell2010
+
 executable evalrpn1
   main-is: evalrpn1.hs
   other-modules:

@@ -1,4 +1,5 @@
 import Control.Monad.Reader
+import Data.Foldable (traverse_)
 
 data Config = Config {
         verbose :: Bool
@@ -32,6 +33,9 @@ silent config = config { verbose = False}
 
 doSomethingSpecialSilently :: ConfigM ()
 doSomethingSpecialSilently = local silent doSomethingSpecial
+
+showInt :: Reader Int (IO ())
+showInt = reader $ \i -> putStrLn $ show i
 
 main :: IO ()
 main = do

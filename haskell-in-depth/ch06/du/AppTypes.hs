@@ -26,3 +26,10 @@ initialEnv config@AppConfig {..} = AppEnv {
                     else getSymbolicLinkStatus
     }
 
+defaultConfig :: AppConfig
+defaultConfig = AppConfig {
+        basePath = "data"
+        , maxDepth = 2
+        , extension = Nothing
+        , followSymlinks = True
+    }

@@ -53,9 +53,9 @@ instance Monad m => Monad (EitherT e m) where
     return = pure
 
     (>>=) :: EitherT e m a -> (a -> EitherT e m b) -> EitherT e m b
-    EitherT ema >>= f = EitherT $ do
-        val <- ema
-        case val of
+    EitherT mea >>= f = EitherT $ do
+        ea <- mea
+        case ea of
             Left  e -> return $ Left e
             Right a -> runEitherT (f a)
 
@@ -67,8 +67,8 @@ swapEitherT :: (Functor m) => EitherT e m a -> EitherT a m e
 swapEitherT (EitherT ema)= EitherT $ fmap swapEither ema
 
 eitherT :: Monad m => (a -> m c) -> (b -> m c) -> EitherT a m b -> m c
-eitherT famc fbmc (EitherT amb) = do
-    ab <- amb
+eitherT famc fbmc (EitherT mab) = do
+    ab <- mab
     case ab of
         Left  a -> famc a
         Right b -> fbmc b

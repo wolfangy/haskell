@@ -101,6 +101,26 @@ newtype MaybeT m a =
 newtype ReaderT r m a =
     ReaderT { runReaderT :: r -> m a}
 
-embeded :: MaybeT (ExceptT String (ReaderT () IO)) Int
+embedded :: MaybeT (ExceptT String (ReaderT () IO)) Int
+embedded = return 1
+
+maybeUnwrap :: ExceptT String (ReaderT () IO) (Maybe Int)
+maybeUnwrap = runMaybeT embedded
+
+eitherUnwrap :: ReaderT() IO (Either String (Maybe Int))
+eitherUnwrap = runExcept maybeUnwrap
+
+readerUnwrap :: () -> IO (Either String (Maybe Int))
+readerUnwrap = runReaderT eitherUnwrap
+
+-- evaluate the code:
+evaluated = readerUnwrap ()
+-- Right (Just 1)
 ```
+
+__Base Monad__ means what is structurally outermost:
+
+`type MyType a = IO [Maybe a]`
+
+In `MyType`, the base monad is `IO`.
 

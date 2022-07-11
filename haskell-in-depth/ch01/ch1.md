@@ -219,16 +219,30 @@ Example:
 
 fmt :: Fmt.Internal.Core.FromBuilder b => Builder -> b
 
+-- :exclamation:
 type Buildable :: * -> Constraint
 class Buildable p where build :: p -> Builder
   {-# MINIMAL build #-}
         -- Defined in ‘formatting-7.1.3:Formatting.Buildable’
+instance Buildable [Char]
+  -- Defined in ‘formatting-7.1.3:Formatting.Buildable’
+instance [overlappable] Buildable a => Buildable [a]
+  -- Defined in ‘formatting-7.1.3:Formatting.Buildable’
+instance Buildable Word
+  -- Defined in ‘formatting-7.1.3:Formatting.Buildable’
+instance Buildable Text
+  -- Defined in ‘formatting-7.1.3:Formatting.Buildable’
 
+-- :exclamation:
 type Fmt.Internal.Core.FromBuilder :: * -> Constraint
 class Fmt.Internal.Core.FromBuilder a where
   Fmt.Internal.Core.fromBuilder :: Builder -> a
   {-# MINIMAL fromBuilder #-}
         -- Defined in ‘Fmt.Internal.Core’
+instance (a ~ Char) => Fmt.Internal.Core.FromBuilder [a]
+  -- Defined in ‘Fmt.Internal.Core’
+instance Fmt.Internal.Core.FromBuilder Text
+  -- Defined in ‘Fmt.Internal.Core’
 ```
 
 :crystal_ball: Sometimes we need to call `show` for our variable (if the `fmt` package doesn't know how to convert it to textual form). This can be done implicitly via the other pair of operators: `+||` and `||+`.

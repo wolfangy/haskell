@@ -217,7 +217,16 @@ Example:
 
 (|+) :: (Buildable a, Fmt.Internal.Core.FromBuilder b) => a -> Builder -> b
 
+type Buildable :: * -> Constraint
 class Buildable p where build :: p -> Builder
+  {-# MINIMAL build #-}
+        -- Defined in ‘formatting-7.1.3:Formatting.Buildable’
+
+type Fmt.Internal.Core.FromBuilder :: * -> Constraint
+class Fmt.Internal.Core.FromBuilder a where
+  Fmt.Internal.Core.fromBuilder :: Builder -> a
+  {-# MINIMAL fromBuilder #-}
+        -- Defined in ‘Fmt.Internal.Core’
 ```
 
 :crystal_ball: Sometimes we need to call `show` for our variable (if the `fmt` package doesn't know how to convert it to textual form). This can be done implicitly via the other pair of operators: `+||` and `||+`.

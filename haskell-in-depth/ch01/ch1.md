@@ -217,6 +217,8 @@ Example:
 
 (|+) :: (Buildable a, Fmt.Internal.Core.FromBuilder b) => a -> Builder -> b
 
+fmt :: Fmt.Internal.Core.FromBuilder b => Builder -> b
+
 type Buildable :: * -> Constraint
 class Buildable p where build :: p -> Builder
   {-# MINIMAL build #-}

@@ -99,3 +99,16 @@ module ModuleName (
 
 ### 4.1.2 Custom Preludes
 
+GHC extension `NoImplicitPrelude` make no `Prelude` imported.
+
+Good custom preludes:
+
+* `Protolude`: used as a starting point for developing a prelude for a particular project.
+* `relude`: based on productivity, safety and performance.
+* `universum`: based on `Protolude` that aims to speed up productivity.
+* `base-prelude`
+* `classy-prelude`
+* `fundation`
+
+### 4.1.3 containers-mini
+

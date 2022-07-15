@@ -369,7 +369,7 @@ class Monad m => StatefulGen g m where
 
 * :cherries: There is also the `global` standard random-number generator available in the `IO` monad.
 
-* :abacus: the __`Uniform`__ and __`UniformRange`__ type class for drawing a value from a whole domain or from a re
+* :abacus: the __`Uniform`__ and __`UniformRange`__ type class for drawing a value from a whole domain or from a range
 
 ```haskell
 class Uniform a where

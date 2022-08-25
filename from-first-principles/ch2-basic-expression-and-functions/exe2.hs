@@ -12,4 +12,5 @@ waxOn' = x * 5
 
 triple x = x * 3
 
+waxOff :: Num a => a -> a
 waxOff x = triple x

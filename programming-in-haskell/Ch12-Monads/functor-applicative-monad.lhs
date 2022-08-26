@@ -45,7 +45,7 @@ Two key benefits of using functors:
 1. the function `fmap` can be used to process the elements of any structure that
 is functorial.
 
-2. We can define generic functions taht can be used with any functor.
+2. We can define generic functions that can be used with any functor.
 
 exp: 
 

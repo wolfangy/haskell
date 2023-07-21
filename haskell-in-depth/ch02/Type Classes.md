@@ -1,4 +1,4 @@
-# Chapter 2 Type classes
+# Chapter 2
 
 Chapter converts:
 
@@ -12,7 +12,7 @@ Chapter converts:
 
 ----
 
-:+1: __`Type classes`__ are usually considered most prominent feature:
+## :+1: __`Type classes`__ are usually considered most prominent feature:
 
 * With respect to some type variable
 

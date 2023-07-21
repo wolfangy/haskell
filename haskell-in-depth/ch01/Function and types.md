@@ -1,4 +1,5 @@
-# Chapter 1 Function and types
+
+# Chapter 1
 
 Chapter covers:
 

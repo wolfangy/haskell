@@ -2,7 +2,7 @@
 
 Chapter converts:
 
-* Exploiting type classes as tools for writing code that works for values of different typs
+* Exploiting type classes as tools for writing code that works for values of different types
 
 * Considering type classes as a concept applicable to many types
 

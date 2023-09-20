@@ -13,8 +13,8 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "haskell-in-depth/ch02/Type Classes.md",
-                "mode": "source",
+                "file": "real-world-haskell/Ch12_BarCode/BarCode/README.md",
+                "mode": "preview",
                 "source": false
               }
             }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "haskell-in-depth/ch02/Type Classes.md",
+                "file": "real-world-haskell/Ch12_BarCode/BarCode/README.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "haskell-in-depth/ch02/Type Classes.md",
+                "file": "real-world-haskell/Ch12_BarCode/BarCode/README.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "haskell-in-depth/ch02/Type Classes.md"
+                "file": "real-world-haskell/Ch12_BarCode/BarCode/README.md"
               }
             }
           }
@@ -146,8 +146,16 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "ce63965d8a06d900",
+  "active": "7627e80f68b77582",
   "lastOpenFiles": [
+    "real-world-haskell/Ch10_ParsingBinary/GrayScaleParser/README.md",
+    "real-world-haskell/Ch6_Typeclasses/README.md",
+    "real-world-haskell/Ch5_Json/README.md",
+    "real-world-haskell/Ch5_Json/simple-json/README.md",
+    "real-world-haskell/Ch3_DefineTypes_StreamFunctions/README.md",
+    "real-world-haskell/Ch2_TypeAndFunction/README.md",
+    "real-world-haskell/Ch1_Start/README.md",
+    "haskell-in-depth/ch02/Type Classes.md",
     "haskell-in-depth/ch01/Function and types.md"
   ]
 }
